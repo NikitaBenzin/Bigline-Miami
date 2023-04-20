@@ -8,14 +8,16 @@ class Player
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
-
-	
+	sf::Clock clock;
 
 	// Private variables
 	float movementSpeed;
 
-	float attackCooldown;
-	float attackCooldownMax;
+	bool isRunning;
+	int currentFrame = 0; // текущий индекс спрайта
+	float elapsedTime = 0.0f; // прошедшее время
+
+
 
 	// Privat functions
 	void initVariables();
@@ -37,8 +39,9 @@ public:
 
 	
 	void updateAttack();
-	void updatePlayerRotation();
-	void update();
+	void updateAnimation(sf::RenderTarget& window, sf::View view);
+	void updatePlayerRotation(sf::Vector2i mousePosition);
+	void update(sf::Vector2i mousePosition, sf::RenderTarget& target, sf::View view);
 	void render(sf::RenderTarget& target);
 
 };

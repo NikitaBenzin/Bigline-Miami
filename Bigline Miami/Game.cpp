@@ -7,6 +7,15 @@ void Game::initWindow()
 {
     window = new sf::RenderWindow(sf::VideoMode(1200, 720), "Bigline Miami");
     window->setFramerateLimit(60);
+
+    // создание вида
+    sf::View view(sf::FloatRect(0, 0, 600, 360));
+
+    // установка начальной позиции вида
+    view.setCenter(400, 300);
+
+    // установка вида для окна
+    window->setView(view);
 }
 
 void Game::initPlayer()
@@ -37,8 +46,6 @@ void Game::run()
 {
     while (window->isOpen())
     {
-        sf::Vector2i position = sf::Mouse::getPosition();
-        //std::cout << position.x << " " << position.y << "\n";
         update();
         render();
     }
@@ -53,9 +60,12 @@ void Game::update()
 {
     updatePollEvents();
 
-    updateInput();
+    //updateInput();
 
-    player->update();
+    mousePosition = sf::Mouse::getPosition(*window);
+    player->update(mousePosition, *window, view);
+
+
 }
 
 void Game::updatePollEvents()
@@ -71,15 +81,7 @@ void Game::updatePollEvents()
 
 void Game::updateInput()
 {
-    // Move player
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        player->move(-1.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        player->move(1.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        player->move(0.f, -1.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        player->move(0.f, 1.f);
+    
 }
 
 
@@ -91,11 +93,11 @@ void Game::updateInput()
 */
 void Game::render()
 {
-	window->clear();
+    window->clear(sf::Color::Cyan);
 
 	// Draw staff here...
     player->render(*window);
-    //window->draw(shape);
+    window->draw(shape);
 
 	window->display();
 }
