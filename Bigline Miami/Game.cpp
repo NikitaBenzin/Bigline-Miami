@@ -17,6 +17,8 @@ void Game::initWindow()
     worldBorder.setOutlineColor(sf::Color::Black);
     worldBorder.setOutlineThickness(1);
 
+    view.reset(sf::FloatRect(0,0,640,480));
+
 }
 
 

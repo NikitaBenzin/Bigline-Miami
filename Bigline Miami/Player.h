@@ -9,7 +9,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Clock clock;
-	// создание квадрата вокруг спрайта
+	// Create the rectangle around player sprite
 	sf::RectangleShape border;
 
 
@@ -39,6 +39,9 @@ public:
 	// Public functions
 	void move(const float dirX, const float dirY);
 	const bool canAttack();
+
+	float getPlayerCoordinateX();
+	float getPlayerCoordinateY();
 
 	void walkAnimation();
 	void updateAttack();

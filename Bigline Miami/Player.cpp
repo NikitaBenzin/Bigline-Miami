@@ -71,6 +71,16 @@ const bool Player::canAttack()
 	return false;
 }
 
+float Player::getPlayerCoordinateX()
+{
+	return sprite.getPosition().x;
+}
+
+float Player::getPlayerCoordinateY()
+{
+	return sprite.getPosition().y;
+}
+
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
 // Walk Animation
@@ -99,7 +109,6 @@ void Player::updateAttack()
 void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 {
 
-
 	// Move player
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
@@ -117,7 +126,8 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().y < border.getPosition().y - 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
-
+				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				window.setView(view);
 			}
 		}
 
@@ -132,7 +142,8 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().x < border.getPosition().x - 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
-
+				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				window.setView(view);
 			}
 		}
 
@@ -147,7 +158,8 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().x > border.getPosition().x + 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
-
+				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				window.setView(view);
 			}
 		}
 
@@ -162,9 +174,11 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().y > border.getPosition().y + 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
-
+				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				window.setView(view);
 			}
 		}
+		
 	}
 	else {
 		isRunning = false;
