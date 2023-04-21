@@ -126,8 +126,11 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().y < border.getPosition().y - 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
-				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				window.setView(view);
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().y - 16 + border.getSize().y / 2 < 16) {
+				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
 			}
 		}
 
@@ -142,8 +145,11 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().x < border.getPosition().x - 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
-				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				window.setView(view);
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().x - border.getSize().x / 2 <= 0) {
+				sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
 			}
 		}
 
@@ -158,8 +164,11 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().x > border.getPosition().x + 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
-				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				window.setView(view);
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().x + border.getSize().x / 2 >= window.getSize().x) {
+				sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
 			}
 		}
 
@@ -174,8 +183,11 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			if (sprite.getPosition().y > border.getPosition().y + 64)
 			{
 				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
-				view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				window.setView(view);
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().y + 16 + border.getSize().y / 2 > window.getSize().y) {
+				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
 			}
 		}
 		

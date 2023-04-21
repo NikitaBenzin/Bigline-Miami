@@ -5,7 +5,7 @@
 
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Bigline Miami");
+    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
     window->setFramerateLimit(60);
 
     // создание вида
@@ -17,7 +17,7 @@ void Game::initWindow()
     worldBorder.setOutlineColor(sf::Color::Black);
     worldBorder.setOutlineThickness(1);
 
-    view.reset(sf::FloatRect(0,0,640,480));
+    // view.reset(sf::FloatRect(0,0,640,480));
 
 }
 
