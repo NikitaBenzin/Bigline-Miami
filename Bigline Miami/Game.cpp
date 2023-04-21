@@ -5,18 +5,20 @@
 
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1200, 720), "Bigline Miami");
+    window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Bigline Miami");
     window->setFramerateLimit(60);
 
     // создание вида
-    sf::View view(sf::FloatRect(0, 0, 600, 360));
+    //view.zoom(2);
 
-    // установка начальной позиции вида
-    view.setCenter(400, 300);
+    // Initializing world Border
+    worldBorder.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+    worldBorder.setFillColor(sf::Color::Transparent);
+    worldBorder.setOutlineColor(sf::Color::Black);
+    worldBorder.setOutlineThickness(1);
 
-    // установка вида для окна
-    window->setView(view);
 }
+
 
 void Game::initPlayer()
 {
@@ -93,10 +95,11 @@ void Game::updateInput()
 */
 void Game::render()
 {
-    window->clear(sf::Color::Cyan);
+    window->clear(sf::Color::White);
 
 	// Draw staff here...
     player->render(*window);
+    window->draw(worldBorder);
     window->draw(shape);
 
 	window->display();

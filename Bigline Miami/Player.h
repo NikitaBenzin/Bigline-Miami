@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -9,13 +9,16 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Clock clock;
+	// СЃРѕР·РґР°РЅРёРµ РєРІР°РґСЂР°С‚Р° РІРѕРєСЂСѓРі СЃРїСЂР°Р№С‚Р°
+	sf::RectangleShape border;
+
 
 	// Private variables
 	float movementSpeed;
 
 	bool isRunning;
-	int currentFrame = 0; // текущий индекс спрайта
-	float elapsedTime = 0.0f; // прошедшее время
+	int currentFrame = 0; // ГІГҐГЄГіГ№ГЁГ© ГЁГ­Г¤ГҐГЄГ± Г±ГЇГ°Г Г©ГІГ 
+	float elapsedTime = 0.0f; // ГЇГ°Г®ГёГҐГ¤ГёГҐГҐ ГўГ°ГҐГ¬Гї
 
 
 
@@ -37,7 +40,7 @@ public:
 	void move(const float dirX, const float dirY);
 	const bool canAttack();
 
-	
+	void walkAnimation();
 	void updateAttack();
 	void updateAnimation(sf::RenderTarget& window, sf::View view);
 	void updatePlayerRotation(sf::Vector2i mousePosition);

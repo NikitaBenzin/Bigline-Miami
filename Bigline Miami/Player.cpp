@@ -4,8 +4,17 @@
 
 void Player::initVariables()
 {
+	// Set movement speed and bool is running
 	movementSpeed = 10.f;
 	isRunning = false;
+
+	// Init rectangle around player
+	border.setSize(sf::Vector2f(32, 32));
+	border.setOrigin(border.getLocalBounds().width / 2, border.getLocalBounds().height / 2);
+	border.scale(5, 5);
+	border.setFillColor(sf::Color::Transparent);
+	border.setOutlineColor(sf::Color::Red);
+	border.setOutlineThickness(0.5);
 }
 
 void Player::initTexture()
@@ -24,9 +33,11 @@ void Player::initSprite(sf::RenderTarget& window)
 
 	// Resize the sprite
 	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // первый спрайт
-	sprite.scale(3, 3);
+	sprite.scale(1.2, 1.2);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
+
+	border.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -62,6 +73,23 @@ const bool Player::canAttack()
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
+// Walk Animation
+void Player::walkAnimation()
+{
+	sf::Time deltaTime = clock.restart(); // получение прошедшего времени
+	float deltaTimeSeconds = deltaTime.asSeconds(); // преобразование в секунды
+
+	elapsedTime += deltaTimeSeconds * 4;
+	if (elapsedTime >= 0.1f) { // время между спрайтами
+		currentFrame++;
+		if (currentFrame > 15) { // количество спрайтов в одном цикле
+			currentFrame = 0;
+		}
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
+		elapsedTime = 0.0f;
+	}
+}
+
 void Player::updateAttack()
 {
 
@@ -70,8 +98,7 @@ void Player::updateAttack()
 
 void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 {
-	sf::Time deltaTime = clock.restart(); // получение прошедшего времени
-	float deltaTimeSeconds = deltaTime.asSeconds(); // преобразование в секунды
+
 
 	// Move player
 	
@@ -82,72 +109,61 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 
 		// W 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			view.move(0, -10);
-			window.setView(view);
+			/*view.move(0, -10);
+			window.setView(view);*/
+			sprite.move(0, -5);
+			walkAnimation();
 
-				elapsedTime += deltaTimeSeconds * 4;
-				if (elapsedTime >= 0.1f) { // время между спрайтами
-					currentFrame++;
-					if (currentFrame > 15) { // количество спрайтов в одном цикле
-						currentFrame = 0;
-					}
-					sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
-					elapsedTime = 0.0f;
-				}
-			
+			if (sprite.getPosition().y < border.getPosition().y - 64)
+			{
+				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
+
+			}
 		}
 
 
 		// A 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			view.move(-10, 0);
-			window.setView(view);
+			sprite.move(-5, 0);
+			//view.move(-10, 0);
+			//window.setView(view);
+			walkAnimation();
 
-				elapsedTime += deltaTimeSeconds * 4;
-				if (elapsedTime >= 0.1f) { // время между спрайтами
-					currentFrame++;
-					if (currentFrame > 15) { // количество спрайтов в одном цикле
-						currentFrame = 0;
-					}
-					sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
-					elapsedTime = 0.0f;
-				}
-			
+			if (sprite.getPosition().x < border.getPosition().x - 64)
+			{
+				border.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
+
+			}
 		}
 
 		// D 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			view.move(10, 0);
-			window.setView(view);
+			sprite.move(5, 0);
+			//view.move(10, 0);
+			//window.setView(view);
 
-				elapsedTime += deltaTimeSeconds * 4;
-				if (elapsedTime >= 0.1f) { // время между спрайтами
-					currentFrame++;
-					if (currentFrame > 15) { // количество спрайтов в одном цикле
-						currentFrame = 0;
-					}
-					sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
-					elapsedTime = 0.0f;
-				}
-			
+			walkAnimation();
+				
+			if (sprite.getPosition().x > border.getPosition().x + 64)
+			{
+				border.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
+
+			}
 		}
 
 
 		// S
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			view.move(0, 10);
-			window.setView(view);
+			sprite.move(0, 5);
+			//view.move(0, 10);
+			//window.setView(view);
+			walkAnimation();
 
-				elapsedTime += deltaTimeSeconds * 4;
-				if (elapsedTime >= 0.1f) { // время между спрайтами
-					currentFrame++;
-					if (currentFrame > 15) { // количество спрайтов в одном цикле
-						currentFrame = 0;
-					}
-					sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
-					elapsedTime = 0.0f;
-				}
-			
+			if (sprite.getPosition().y > border.getPosition().y + 64)
+			{
+				border.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
+
+			}
 		}
 	}
 	else {
@@ -169,13 +185,14 @@ void Player::updatePlayerRotation(sf::Vector2i mousePosition)
 
 void Player::update(sf::Vector2i mousePosition, sf::RenderTarget& target, sf::View view)
 {
-	updateAnimation(target, view);
 	updatePlayerRotation(mousePosition);
+	updateAnimation(target, view);
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 
 
 void Player::render(sf::RenderTarget& target)
 {
+	target.draw(border);
 	target.draw(sprite);
 }

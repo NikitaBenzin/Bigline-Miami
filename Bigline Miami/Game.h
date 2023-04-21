@@ -9,7 +9,7 @@ private:
 	sf::RenderWindow* window;
 	sf::Event event;
 	sf::CircleShape shape;
-	sf::RectangleShape background;
+	sf::RectangleShape worldBorder;
 	// Player
 	Player* player;
 	
