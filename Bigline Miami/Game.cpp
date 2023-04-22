@@ -22,6 +22,12 @@ void Game::initWindow()
     shape.setFillColor(sf::Color::Green);
 }
 
+void Game::initTextures()
+{
+    textures["BULLET"] = new sf::Texture();
+    textures["BULLET"]->loadFromFile("textures/bullet.png");
+}
+
 
 void Game::initPlayer()
 {
@@ -35,6 +41,7 @@ void Game::initPlayer()
 Game::Game()
 {
     initWindow();
+    initTextures();
     initPlayer();
 }
 
@@ -42,6 +49,12 @@ Game::~Game()
 {
     delete player;
     delete window;
+
+    // Delete textures
+    for (auto &i : textures)
+    {
+        delete i.second;
+    }
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 

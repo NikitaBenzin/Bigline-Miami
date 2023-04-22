@@ -1,7 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "Bullet.h"
 
 class Gun
 {
@@ -29,6 +28,11 @@ public:
 	// Public functions
 	float getPositionX();
 	float getPositionY();
+
+	void makeInvisible();
+	void makeVisible();
+
+	void dropTheWeapon(float player_pos_x, float player_pos_y);
 
 	float getBoundsX();
 	float getBoundsY();

@@ -43,6 +43,21 @@ float Gun::getPositionY()
 	return sprite.getPosition().y;
 }
 
+void Gun::makeInvisible()
+{
+	sprite.setColor(sf::Color::Transparent);
+}
+
+void Gun::makeVisible()
+{
+	sprite.setColor(sf::Color::White);
+}
+
+void Gun::dropTheWeapon(float player_pos_x, float player_pos_y)
+{
+	sprite.setPosition(sf::Vector2f(player_pos_x, player_pos_y));
+}
+
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
 

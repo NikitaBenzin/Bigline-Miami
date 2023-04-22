@@ -17,8 +17,13 @@ private:
 	// Weapon
 	Gun* gun;
 
+	sf::Time time;
+	bool timer(sf::Time& time);
+	bool withWeapon;
+
 	float attackCooldown;
 	float attackCooldownMax;
+
 
 
 	sf::Clock attackTimer;
@@ -30,7 +35,6 @@ private:
 	
 	int currentFrame = 0; // òåêóùèé èíäåêñ ñïðàéòà
 	float elapsedTime = 0.0f; // ïðîøåäøåå âðåìÿ
-
 
 
 	// Privat functions

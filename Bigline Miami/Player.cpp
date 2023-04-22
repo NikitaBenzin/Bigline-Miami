@@ -1,16 +1,21 @@
-#include "Player.h"
+п»ї#include "Player.h"
 
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
+
 
 void Player::initVariables()
 {
 	// Set movement speed and bool is running
 	movementSpeed = 10.f;
 
+	withWeapon = false;
+
+	time = sf::seconds(0.1f);
+
 	// Set variables for attack
 	attackTimer.restart();
 	attackTimerMax = 1;
-	attackCooldownMax = 10.f;
+	attackCooldownMax = 20.f;
 	attackCooldown = attackCooldownMax;
 
 	// Init rectangle around player
@@ -29,6 +34,19 @@ void Player::initVariables()
 	gunBorder.setOutlineThickness(2);
 }
 
+bool Player::timer(sf::Time& time)
+{
+	static sf::Clock clock;
+	time = clock.getElapsedTime();
+
+	// РџСЂРѕРІРµСЂСЏРµРј, РїСЂРѕС€Р»Р° Р»Рё РѕРґРЅР° СЃРµРєСѓРЅРґР°
+	if (time.asSeconds() >= 0.1f) {
+		clock.restart();
+		return true;
+	}
+	return false;
+}
+
 void Player::initTexture()
 {
 	// Load a texture from file
@@ -44,7 +62,7 @@ void Player::initSprite(sf::RenderTarget& window)
 	sprite.setTexture(texture);
 
 	// Resize the sprite
-	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // первый спрайт
+	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // ГЇГҐГ°ГўГ»Г© Г±ГЇГ°Г Г©ГІ
 	sprite.scale(3.5, 3.5);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
@@ -55,10 +73,6 @@ void Player::initSprite(sf::RenderTarget& window)
 void Player::initWeapon()
 {
 	gun = new Gun;
-	//std::cout << gun->getPositionX() << std::endl;
-	//std::cout << gun->getPositionY() << std::endl;
-	//std::cout << gun->getBoundsX() << std::endl;
-	//std::cout << gun->getBoundsY() << std::endl;
 	gunBorder.setPosition(gun->getPositionX() - 24, gun->getPositionY() - 24);
 }
 
@@ -103,28 +117,29 @@ float Player::getPlayerCoordinateY()
 bool Player::weaponCollision()
 {
 	// Collision with gun border
-	if (sprite.getPosition().x > gunBorder.getPosition().x 
+	if (sprite.getPosition().x > gunBorder.getPosition().x
 		&& sprite.getPosition().x < gunBorder.getPosition().x + 48
 		&& sprite.getPosition().y > gunBorder.getPosition().y
-		&& sprite.getPosition().y < gunBorder.getPosition().y + 48)
+		&& sprite.getPosition().y < gunBorder.getPosition().y + 48
+		&& !withWeapon)
 	{
-
 		return true;
 	}
+	else return false;
 }
 
 void Player::attackAnimation()
 {
-	sf::Time deltaTime = clock.restart(); // получение прошедшего времени
-	float deltaTimeSeconds = deltaTime.asSeconds(); // преобразование в секунды
+	sf::Time deltaTime = clock.restart(); // ГЇГ®Г«ГіГ·ГҐГ­ГЁГҐ ГЇГ°Г®ГёГҐГ¤ГёГҐГЈГ® ГўГ°ГҐГ¬ГҐГ­ГЁ
+	float deltaTimeSeconds = deltaTime.asSeconds(); // ГЇГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГҐ Гў Г±ГҐГЄГіГ­Г¤Г»
 
 	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.07f) { // время между спрайтами
+	if (elapsedTime >= 0.07f) { // ГўГ°ГҐГ¬Гї Г¬ГҐГ¦Г¤Гі Г±ГЇГ°Г Г©ГІГ Г¬ГЁ
 		currentFrame++;
-		if (currentFrame > 8) { // количество спрайтов в одном цикле
+		if (currentFrame > 8) { // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г±ГЇГ°Г Г©ГІГ®Гў Гў Г®Г¤Г­Г®Г¬ Г¶ГЁГЄГ«ГҐ
 			currentFrame = 0;
 		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); // установка нового прямоугольника текстуры
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); // ГіГ±ГІГ Г­Г®ГўГЄГ  Г­Г®ГўГ®ГЈГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  ГІГҐГЄГ±ГІГіГ°Г»
 		elapsedTime = 0.0f;
 	}
 }
@@ -152,16 +167,16 @@ const bool Player::canAttack()
 // Walk Animation
 void Player::walkAnimation()
 {
-	sf::Time deltaTime = clock.restart(); // получение прошедшего времени
-	float deltaTimeSeconds = deltaTime.asSeconds(); // преобразование в секунды
+	sf::Time deltaTime = clock.restart(); // ГЇГ®Г«ГіГ·ГҐГ­ГЁГҐ ГЇГ°Г®ГёГҐГ¤ГёГҐГЈГ® ГўГ°ГҐГ¬ГҐГ­ГЁ
+	float deltaTimeSeconds = deltaTime.asSeconds(); // ГЇГ°ГҐГ®ГЎГ°Г Г§Г®ГўГ Г­ГЁГҐ Гў Г±ГҐГЄГіГ­Г¤Г»
 
 	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.1f) { // время между спрайтами
+	if (elapsedTime >= 0.1f) { // ГўГ°ГҐГ¬Гї Г¬ГҐГ¦Г¤Гі Г±ГЇГ°Г Г©ГІГ Г¬ГЁ
 		currentFrame++;
-		if (currentFrame > 15) { // количество спрайтов в одном цикле
+		if (currentFrame > 15) { // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г±ГЇГ°Г Г©ГІГ®Гў Гў Г®Г¤Г­Г®Г¬ Г¶ГЁГЄГ«ГҐ
 			currentFrame = 0;
 		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // установка нового прямоугольника текстуры
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // ГіГ±ГІГ Г­Г®ГўГЄГ  Г­Г®ГўГ®ГЈГ® ГЇГ°ГїГ¬Г®ГіГЈГ®Г«ГјГ­ГЁГЄГ  ГІГҐГЄГ±ГІГіГ°Г»
 		elapsedTime = 0.0f;
 	}
 }
@@ -183,9 +198,6 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
 		sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
 		sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		
-		
-		if (weaponCollision()) std::cout << "Weapon Collision" << std::endl;
 
 		// W 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -193,23 +205,26 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			window.setView(view);*/
 			sprite.move(0, -5);
 
-			// Attack without weapon
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (getAttackTimer()) attackAnimation();
-			}
-			else {
-				walkAnimation();
-			}
-			
-			// Collision with player border
-			if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
+			if (!withWeapon)
 			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
-				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
+				// Attack without weapon
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (getAttackTimer()) attackAnimation();
+				}
+				else {
+					walkAnimation();
+				}
+
+				// Collision with player border
+				if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
+				{
+					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
+					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+					//window.setView(view);
+				}
+				if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
+					sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
+				}
 			}
 
 		}
@@ -220,21 +235,24 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			sprite.move(-5, 0);
 			//view.move(-10, 0);
 			//window.setView(view);
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (getAttackTimer()) attackAnimation();
-			}
-			else {
-				walkAnimation();
-			}
-
-			if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
+			if (!withWeapon)
 			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
-				sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (getAttackTimer()) attackAnimation();
+				}
+				else {
+					walkAnimation();
+				}
+
+				if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
+				{
+					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
+					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+					//window.setView(view);
+				}
+				if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
+					sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
+				}
 			}
 		}
 
@@ -243,21 +261,25 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			sprite.move(5, 0);
 			//view.move(10, 0);
 			//window.setView(view);
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (getAttackTimer()) attackAnimation();
-			}
-			else {
-				walkAnimation();
-			}
-				
-			if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
+			
+			if (!withWeapon)
 			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
-				sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (getAttackTimer()) attackAnimation();
+				}
+				else {
+					walkAnimation();
+				}
+
+				if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
+				{
+					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
+					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+					//window.setView(view);
+				}
+				if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
+					sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
+				}
 			}
 		}
 
@@ -267,37 +289,66 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			sprite.move(0, 5);
 			//view.move(0, 10);
 			//window.setView(view);
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				if (getAttackTimer()) attackAnimation();
-			}
-			else {
-				walkAnimation();
-			}
-
-			if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
+			
+			if (!withWeapon)
 			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
-				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					if (getAttackTimer()) attackAnimation();
+				}
+				else {
+					walkAnimation();
+				}
+
+				if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
+				{
+					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
+					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+					//window.setView(view);
+				}
+				if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
+					sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
+				}
 			}
 		}
 		
 
 	}
-	else {
-		
-		sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // в начальную позицию
+	else if (!withWeapon){
+		sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // set sprite to the start
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !withWeapon) {
 		if (getAttackTimer()) attackAnimation();
 	}
 
-
-
+	// pick up a weapon
+	// right click, weapon collision and timer in 0.1s after that take the gun
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && weaponCollision() && timer(time)) {
+		gun->makeInvisible(); 
+		withWeapon = true;
+		gunBorder.setSize(sf::Vector2f(0, 0));
+		sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
+		std::cout << "gun\n";
+	}
+	// drop a weapon
+	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && withWeapon && timer(time))
+	{
+		gun->makeVisible();
+		withWeapon = false;
+		gun->dropTheWeapon(sprite.getPosition().x, sprite.getPosition().y);
+		gunBorder.setSize(sf::Vector2f(32, 32));
+		gunBorder.setPosition(gun->getPositionX() - 24, gun->getPositionY() - 24);
+	}
+	
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && withWeapon)
+	{
+		
+		if (canAttack())
+		{
+			sprite.setTextureRect(sf::IntRect(32, 64, 32, 32));
+			
+		} else sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
+	}
 }
 
 /**

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "Player.h"
 
 class Game
@@ -10,6 +11,10 @@ private:
 	sf::Event event;
 	sf::CircleShape shape;
 	sf::RectangleShape worldBorder;
+
+	// Resources
+	std::map<std::string, sf::Texture*> textures;
+
 	// Player
 	Player* player;
 
@@ -19,6 +24,8 @@ private:
 
 	// Private functions
 	void initWindow();
+	void initTextures();
+
 	void initPlayer();
 
 public:
