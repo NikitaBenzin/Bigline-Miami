@@ -12,7 +12,7 @@ private:
 	sf::RectangleShape worldBorder;
 	// Player
 	Player* player;
-	
+
 	sf::View view;
 
 	sf::Vector2i mousePosition;
