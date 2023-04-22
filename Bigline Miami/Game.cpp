@@ -18,17 +18,17 @@ void Game::initWindow()
     worldBorder.setOutlineThickness(1);
 
     // view.reset(sf::FloatRect(0,0,640,480));
-
+    shape.setRadius(100.f);
+    shape.setFillColor(sf::Color::Green);
 }
 
 
 void Game::initPlayer()
 {
     player = new Player(*window);
-
-    shape.setRadius(100.f);
-    shape.setFillColor(sf::Color::Green);
 }
+
+
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
@@ -69,7 +69,7 @@ void Game::update()
     mousePosition = sf::Mouse::getPosition(*window);
     player->update(mousePosition, *window, view);
 
-
+    //gun->update(mousePosition, *window);
 }
 
 void Game::updatePollEvents()
@@ -100,8 +100,9 @@ void Game::render()
     window->clear(sf::Color::White);
 
 	// Draw staff here...
+
     player->render(*window);
-    window->draw(worldBorder);
+
     window->draw(shape);
 
 	window->display();
