@@ -199,7 +199,10 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 
 }
 
-
+/**
+*	@ return void
+*	- rotate the player sprite to the cursor 
+*/
 void Player::updatePlayerRotation(sf::Vector2i mousePosition)
 {
 	sf::Vector2f spritePosition = sprite.getPosition();
