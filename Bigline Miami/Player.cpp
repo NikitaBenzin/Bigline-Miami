@@ -345,12 +345,14 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		withWeapon = true;
 		gunBorder.setSize(sf::Vector2f(0, 0));
 		sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
+		sprite.setOrigin(32 , 8);
 		std::cout << "gun\n";
 	}
 	// drop a weapon
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && withWeapon && timer(time))
 	{
 		gun->makeVisible();
+		sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 		withWeapon = false;
 		gun->dropTheWeapon(sprite.getPosition().x, sprite.getPosition().y);
 		gun->setRotation(rotation);

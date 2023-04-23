@@ -147,8 +147,6 @@ void Game::updateInput()
                 currVelocity.y, 
                 5.f,
                 player->getRotation()));
-            std::cout << player->getRotation() << std::endl;
-            std::cout << player->getPlayerCoordinateX() << std::endl;
            
         }
         else player->setTexture(0, 64, 32, 32);
