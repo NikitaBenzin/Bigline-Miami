@@ -58,6 +58,16 @@ void Gun::dropTheWeapon(float player_pos_x, float player_pos_y)
 	sprite.setPosition(sf::Vector2f(player_pos_x, player_pos_y));
 }
 
+void Gun::setPosition(float pos_x, float pos_y)
+{
+	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
+}
+
+void Gun::setRotation(float rotation)
+{
+	sprite.setRotation(rotation);
+}
+
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
 
@@ -74,18 +84,6 @@ Gun::~Gun()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
-
-float Gun::getBoundsX()
-{
-	//return border.getPosition().x;
-	return false;
-}
-
-float Gun::getBoundsY()
-{
-	//return border.getPosition().y;
-	return false;
-}
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 

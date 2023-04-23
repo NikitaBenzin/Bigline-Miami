@@ -23,15 +23,15 @@ void Player::initVariables()
 	playerBorder.setOrigin(playerBorder.getLocalBounds().width / 2, playerBorder.getLocalBounds().height / 2);
 	playerBorder.scale(5, 5);
 	playerBorder.setFillColor(sf::Color::Transparent);
-	//playerBorder.setOutlineColor(sf::Color::Red);
+	//playerBorder.setOutlineColor(sf::Color::Green);
 	//playerBorder.setOutlineThickness(0.5);
 
 	// Init rectangle around player
 	gunBorder.setSize(sf::Vector2f(32, 32));
-	gunBorder.scale(1.5, 1.5);
+	gunBorder.scale(2, 2);
 	gunBorder.setFillColor(sf::Color::Transparent);
-	gunBorder.setOutlineColor(sf::Color::Red);
-	gunBorder.setOutlineThickness(2);
+	//gunBorder.setOutlineColor(sf::Color::Red);
+	//gunBorder.setOutlineThickness(1);
 }
 
 bool Player::timer(sf::Time& time)
@@ -40,7 +40,7 @@ bool Player::timer(sf::Time& time)
 	time = clock.getElapsedTime();
 
 	// Проверяем, прошла ли одна секунда
-	if (time.asSeconds() >= 0.1f) {
+	if (time.asSeconds() >= 0.5f) {
 		clock.restart();
 		return true;
 	}
@@ -73,7 +73,7 @@ void Player::initSprite(sf::RenderTarget& window)
 void Player::initWeapon()
 {
 	gun = new Gun;
-	gunBorder.setPosition(gun->getPositionX() - 24, gun->getPositionY() - 24);
+	gunBorder.setPosition(gun->getPositionX() - 32, gun->getPositionY() - 32);
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -89,11 +89,6 @@ Player::Player(sf::RenderTarget& window)
 Player::~Player()
 {
 	delete gun;
-}
-
-const sf::Vector2f& Player::getPos() const
-{
-	return sprite.getPosition();
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
@@ -113,14 +108,31 @@ float Player::getPlayerCoordinateY()
 	return sprite.getPosition().y;
 }
 
+float Player::getRotation()
+{
+	return rotation;
+}
+
+
+
+sf::Vector2f Player::getAimDirNorm()
+{
+	return aimDirNorm;
+}
+
+void Player::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
+{
+	sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
+}
+
 // weapon collision
 bool Player::weaponCollision()
 {
 	// Collision with gun border
 	if (sprite.getPosition().x > gunBorder.getPosition().x
-		&& sprite.getPosition().x < gunBorder.getPosition().x + 48
+		&& sprite.getPosition().x < gunBorder.getPosition().x + 64
 		&& sprite.getPosition().y > gunBorder.getPosition().y
-		&& sprite.getPosition().y < gunBorder.getPosition().y + 48
+		&& sprite.getPosition().y < gunBorder.getPosition().y + 64
 		&& !withWeapon)
 	{
 		return true;
@@ -162,6 +174,13 @@ const bool Player::canAttack()
 		return true;
 	}
 	return false;
+}
+
+
+
+bool Player::WithWeapon()
+{
+	return withWeapon;
 }
 
 // Walk Animation
@@ -214,19 +233,17 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 				else {
 					walkAnimation();
 				}
-
-				// Collision with player border
-				if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
-				{
-					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
-					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-					//window.setView(view);
-				}
-				if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
-					sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
-				}
 			}
-
+			// Collision with player border
+			if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
+			{
+				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
+				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
+			}
 		}
 
 
@@ -244,15 +261,15 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 					walkAnimation();
 				}
 
-				if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
-				{
-					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
-					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-					//window.setView(view);
-				}
-				if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
-					sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
-				}
+			}
+			if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
+			{
+				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
+				sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
 			}
 		}
 
@@ -271,15 +288,15 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 					walkAnimation();
 				}
 
-				if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
-				{
-					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
-					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-					//window.setView(view);
-				}
-				if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
-					sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
-				}
+			}
+			if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
+			{
+				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
+				sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
 			}
 		}
 
@@ -299,15 +316,15 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 					walkAnimation();
 				}
 
-				if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
-				{
-					playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
-					//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-					//window.setView(view);
-				}
-				if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
-					sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
-				}
+			}
+			if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
+			{
+				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
+				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
+				//window.setView(view);
+			}
+			if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
+				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
 			}
 		}
 		
@@ -336,19 +353,12 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		gun->makeVisible();
 		withWeapon = false;
 		gun->dropTheWeapon(sprite.getPosition().x, sprite.getPosition().y);
+		gun->setRotation(rotation);
+		gun->setPosition(sprite.getPosition().x + 15, sprite.getPosition().y - 15);
 		gunBorder.setSize(sf::Vector2f(32, 32));
-		gunBorder.setPosition(gun->getPositionX() - 24, gun->getPositionY() - 24);
+		gunBorder.setPosition(gun->getPositionX() - 32, gun->getPositionY() - 32);
 	}
-	
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && withWeapon)
-	{
-		
-		if (canAttack())
-		{
-			sprite.setTextureRect(sf::IntRect(32, 64, 32, 32));
-			
-		} else sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
-	}
+
 }
 
 /**
@@ -358,10 +368,19 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 void Player::updatePlayerRotation(sf::Vector2i mousePosition)
 {
 	sf::Vector2f spritePosition = sprite.getPosition();
-	float dx = mousePosition.x - spritePosition.x;
-	float dy = mousePosition.y - spritePosition.y;
-	float rotation = std::atan2(dy, dx) * 180 / 3.14159265;
+	dx = mousePosition.x - spritePosition.x;
+	dy = mousePosition.y - spritePosition.y;
+	rotation = std::atan2(dy, dx) * 180 / 3.14159265;
 	sprite.setRotation(rotation);
+}
+
+void Player::updateMousePos(sf::Vector2i mousePosition)
+{
+	// Mouse pos
+	playerCenter = sf::Vector2f(getPlayerCoordinateX(), getPlayerCoordinateY());
+	mousePosWindow = sf::Vector2f(mousePosition);
+	aimDir = mousePosWindow - playerCenter;
+	aimDirNorm = aimDir / static_cast<float>(sqrt(pow(aimDir.x, 2) + pow(aimDir.y, 2)));
 }
 
 void Player::update(sf::Vector2i mousePosition, sf::RenderTarget& target, sf::View view)
@@ -369,6 +388,7 @@ void Player::update(sf::Vector2i mousePosition, sf::RenderTarget& target, sf::Vi
 	updatePlayerRotation(mousePosition);
 	updateAttack();
 	updateAnimation(target, view);
+	updateMousePos(mousePosition);
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 

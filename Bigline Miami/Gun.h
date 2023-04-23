@@ -34,8 +34,8 @@ public:
 
 	void dropTheWeapon(float player_pos_x, float player_pos_y);
 
-	float getBoundsX();
-	float getBoundsY();
+	void setPosition(float pos_x, float pos_y);
+	void setRotation(float rotation);
 
 	void update(sf::Vector2i mousePosition, sf::RenderTarget& target);
 	void render(sf::RenderTarget& target);
