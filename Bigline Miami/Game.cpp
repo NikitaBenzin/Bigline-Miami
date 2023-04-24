@@ -33,6 +33,11 @@ void Game::initPlayer()
     player = new Player(*window);
 }
 
+void Game::initEnemy()
+{
+    enemy = new Enemy;
+}
+
 void Game::initBullet()
 {
     bulletFirst = (new Bullet(textures["BULLET"],
@@ -53,12 +58,14 @@ Game::Game()
     initWindow();
     initTextures();
     initPlayer();
+    initEnemy();
     initBullet();
 }
 
 Game::~Game()
 {
     delete player;
+    delete enemy;
     delete bulletFirst;
     delete window;
 
@@ -100,6 +107,7 @@ void Game::update()
 
     mousePosition = sf::Mouse::getPosition(*window);
     player->update(mousePosition, *window, view);
+    enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()));
 
     updateBullets();
 }
@@ -167,6 +175,8 @@ void Game::render()
 	// Draw staff here...
 
     player->render(*window);
+
+    enemy->render(*window);
 
     for (auto* bullet : bullets)
     {

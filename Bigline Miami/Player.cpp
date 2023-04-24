@@ -63,7 +63,7 @@ void Player::initSprite(sf::RenderTarget& window)
 
 	// Resize the sprite
 	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // ïåðâûé ñïðàéò
-	sprite.scale(3.5, 3.5);
+	sprite.scale(4, 4);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
 
@@ -345,14 +345,12 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		withWeapon = true;
 		gunBorder.setSize(sf::Vector2f(0, 0));
 		sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
-		sprite.setOrigin(32 , 8);
 		std::cout << "gun\n";
 	}
 	// drop a weapon
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && withWeapon && timer(time))
 	{
 		gun->makeVisible();
-		sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 		withWeapon = false;
 		gun->dropTheWeapon(sprite.getPosition().x, sprite.getPosition().y);
 		gun->setRotation(rotation);

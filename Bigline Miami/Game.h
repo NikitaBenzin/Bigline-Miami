@@ -4,6 +4,7 @@
 #include <math.h>
 #include "Player.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -25,6 +26,9 @@ private:
 	// Player
 	Player* player;
 
+	// Enemy
+	Enemy* enemy;
+
 	sf::View view;
 
 	sf::Vector2i mousePosition;
@@ -37,6 +41,7 @@ private:
 	void initTextures();
 
 	void initPlayer();
+	void initEnemy();
 	void initBullet();
 
 public:
