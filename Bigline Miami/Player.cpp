@@ -62,7 +62,7 @@ void Player::initSprite(sf::RenderTarget& window)
 	sprite.setTexture(texture);
 
 	// Resize the sprite
-	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // ïåðâûé ñïðàéò
+	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // start frame
 	sprite.scale(4, 4);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
@@ -181,6 +181,11 @@ const bool Player::canAttack()
 bool Player::WithWeapon()
 {
 	return withWeapon;
+}
+
+sf::FloatRect Player::getPlayerGlobalBounds()
+{
+	return sprite.getGlobalBounds();
 }
 
 // Walk Animation

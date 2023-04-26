@@ -22,9 +22,11 @@ private:
 	Bullet* bulletFirst;
 	sf::Vector2f currVelocity;
 
+	sf::Time time;
 
 	// Player
 	Player* player;
+	bool playerDead;
 
 	// Enemy
 	Enemy* enemy;
@@ -36,13 +38,18 @@ private:
 	float xForBullet;
 	float yForBullet;
 
+
 	// Private functions
+	void initVariables();
 	void initWindow();
 	void initTextures();
 
 	void initPlayer();
 	void initEnemy();
 	void initBullet();
+
+	// restart function
+	void restart();
 
 public:
 	// Constructor / Destructor
@@ -52,6 +59,8 @@ public:
 	// Public functions
 	void run();
 	
+
+	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void update();
 	void updateBullets();
 	void updatePollEvents();

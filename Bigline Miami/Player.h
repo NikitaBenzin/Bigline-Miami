@@ -18,7 +18,6 @@ private:
 	Gun* gun;
 
 	sf::Time time;
-	bool timer(sf::Time& time);
 	bool withWeapon;
 
 	float attackCooldown;
@@ -58,6 +57,7 @@ public:
 	Player(sf::RenderTarget& window);
 	~Player();
 
+	bool timer(sf::Time& time);
 
 	// Public functions
 	void move(const float dirX, const float dirY);
@@ -78,6 +78,8 @@ public:
 	const bool getAttackTimer();
 	const bool canAttack();
 	bool WithWeapon();
+
+	sf::FloatRect getPlayerGlobalBounds();
 
 	void walkAnimation();
 

@@ -3,11 +3,8 @@
 using namespace sf;
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
-void Game::initWindow()
+void Game::initVariables()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
-    window->setFramerateLimit(60);
-
     currVelocity = sf::Vector2f(0.f, 0.f);
 
     // Initializing world Border
@@ -19,6 +16,16 @@ void Game::initWindow()
     // view.reset(sf::FloatRect(0,0,640,480));
     shape.setRadius(100.f);
     shape.setFillColor(sf::Color::Green);
+    
+    playerDead = false;
+
+    time = sf::seconds(0.1f);
+}
+
+void Game::initWindow()
+{
+    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
+    window->setFramerateLimit(60);
 }
 
 void Game::initTextures()
@@ -49,6 +56,22 @@ void Game::initBullet()
         0.f));
 }
 
+/**
+*   @ return void
+*   - restart function
+*   - delete player and enemy and re-create it
+*/
+void Game::restart()
+{
+    delete player;
+    delete enemy;
+
+    initPlayer();
+    initEnemy();
+    
+    playerDead = false;
+}
+
 
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -56,6 +79,7 @@ void Game::initBullet()
 Game::Game()
 {
     initWindow();
+    initVariables();
     initTextures();
     initPlayer();
     initEnemy();
@@ -93,6 +117,19 @@ void Game::run()
     }
 }
 
+void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
+{
+    // Kill the player if player was attacked by enemy
+    if (enemy->updateEnemyMove(playerPosition, bounds))
+    {
+        //std::cout << "Player DEAD!!!!\n";
+        enemy->enemyAttackAnimation();
+        player->setTexture(0, 97, 32, 32);
+        enemy->stop();
+        playerDead = true;
+    }
+}
+
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 /**
 *   @ return void
@@ -102,14 +139,19 @@ void Game::update()
 {
     updatePollEvents();
 
-    updateInput();
-    
+    if (!playerDead)
+    {
+        updateInput();
 
-    mousePosition = sf::Mouse::getPosition(*window);
-    player->update(mousePosition, *window, view);
-    enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()));
 
-    updateBullets();
+        mousePosition = sf::Mouse::getPosition(*window);
+        player->update(mousePosition, *window, view);
+        enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+
+        updateBullets();
+
+        updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+    }
 }
 
 void Game::updateBullets()
@@ -137,6 +179,8 @@ void Game::updatePollEvents()
             window->close();
         else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape)
             window->close();
+        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::R)
+            if (playerDead) restart();
     }
 }
 
@@ -153,7 +197,7 @@ void Game::updateInput()
                 player->getPlayerCoordinateY() ,
                 currVelocity.x, 
                 currVelocity.y, 
-                5.f,
+                9.f,
                 player->getRotation()));
            
         }
