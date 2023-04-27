@@ -39,8 +39,8 @@ void Enemy::initTriangle()
     triangle.setPoint(2, sf::Vector2f(250, 150));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
-    triangle.setOutlineColor(sf::Color::Green);
-    triangle.setOutlineThickness(1);
+    /*triangle.setOutlineColor(sf::Color::Green);
+    triangle.setOutlineThickness(1);*/
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 }
 
@@ -69,6 +69,14 @@ float Enemy::getEnemyPosX()
 float Enemy::getEnemyPosY()
 {
     return sprite.getPosition().y;
+}
+
+void Enemy::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
+{
+    if (!enemyDead)
+    {
+        sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
+    }
 }
 
 
@@ -106,6 +114,21 @@ void Enemy::enemyAttackAnimation()
     }
 }
 
+sf::FloatRect Enemy::getBounds()
+{
+    return sprite.getGlobalBounds();
+}
+
+void Enemy::setDead(bool dead)
+{
+    enemyDead = dead;
+}
+
+bool Enemy::getEnemyDead()
+{
+    return enemyDead;
+}
+
 void Enemy::stop()
 {
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
@@ -127,7 +150,7 @@ bool Enemy::updateEnemyView(sf::FloatRect bounds)
 bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     
-    if (updateEnemyView(bounds))
+    if (updateEnemyView(bounds) && !enemyDead)
     {
         // std::cout << length << std::endl;  50
         if (length > 0)
@@ -170,7 +193,7 @@ void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 
 void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
-    if (updateEnemyView(bounds))
+    if (updateEnemyView(bounds) && !enemyDead)
     {
         updateEnemyRotation(playerPosition);
     }

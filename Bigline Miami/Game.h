@@ -2,6 +2,8 @@
 
 #include <map>
 #include <math.h>
+
+
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
@@ -18,11 +20,19 @@ private:
 	// Resources
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Bullet*> bullets;
-
+	std::string ammo;
 	Bullet* bulletFirst;
 	sf::Vector2f currVelocity;
 
 	sf::Time time;
+
+	// Fonts
+	sf::Font font;
+	sf::Text ammoText;
+	sf::Text restartText;
+	sf::Color mainColor;
+	sf::Color mainOutlineColor;
+
 
 	// Player
 	Player* player;
@@ -30,6 +40,7 @@ private:
 
 	// Enemy
 	Enemy* enemy;
+	
 
 	sf::View view;
 
@@ -43,7 +54,7 @@ private:
 	void initVariables();
 	void initWindow();
 	void initTextures();
-
+	void initText();
 	void initPlayer();
 	void initEnemy();
 	void initBullet();
@@ -59,7 +70,7 @@ public:
 	// Public functions
 	void run();
 	
-
+	void updateText();
 	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void update();
 	void updateBullets();

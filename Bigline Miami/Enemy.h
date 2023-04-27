@@ -18,7 +18,7 @@ private:
 	float dy;
 
 	float movementSpeed;
-	
+	bool enemyDead = false;
 	// for animations
 	sf::Time deltaTimeForAnim;
 	int currentFrame = 0; 
@@ -42,9 +42,15 @@ public:
 	float getEnemyPosX();
 	float getEnemyPosY();
 
+	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
+
 	void enemyWalkAnimaton();
 	void enemyAttackAnimation();
 
+	sf::FloatRect getBounds();
+
+	void setDead(bool dead);
+	bool getEnemyDead();
 
 	void stop();
 

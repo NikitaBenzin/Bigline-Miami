@@ -5,7 +5,7 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
-
+#include <fstream>
 class Bullet
 {
 private:

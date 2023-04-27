@@ -39,7 +39,6 @@ bool Player::timer(sf::Time& time)
 	static sf::Clock clock;
 	time = clock.getElapsedTime();
 
-	// Проверяем, прошла ли одна секунда
 	if (time.asSeconds() >= 0.5f) {
 		clock.restart();
 		return true;
@@ -98,6 +97,11 @@ void Player::move(const float dirX, const float dirY)
 	sprite.move(movementSpeed * dirX, movementSpeed * dirY);
 }
 
+unsigned short Player::getGunAmmo()
+{
+	return gun->getPistolAmmo();
+}
+
 float Player::getPlayerCoordinateX()
 {
 	return sprite.getPosition().x;
@@ -112,8 +116,6 @@ float Player::getRotation()
 {
 	return rotation;
 }
-
-
 
 sf::Vector2f Player::getAimDirNorm()
 {
@@ -168,15 +170,15 @@ const bool Player::getAttackTimer()
 
 const bool Player::canAttack()
 {
-	if (attackCooldown >= attackCooldownMax)
+	if (attackCooldown >= attackCooldownMax && gun->getPistolAmmo() != 0)
 	{
 		attackCooldown = 0.f;
+		// ammo -1 every time this function is called
+		gun->setPistolAmmo(gun->getPistolAmmo() - 1);
 		return true;
 	}
 	return false;
 }
-
-
 
 bool Player::WithWeapon()
 {
@@ -191,16 +193,16 @@ sf::FloatRect Player::getPlayerGlobalBounds()
 // Walk Animation
 void Player::walkAnimation()
 {
-	sf::Time deltaTime = clock.restart(); // ïîëó÷åíèå ïðîøåäøåãî âðåìåíè
-	float deltaTimeSeconds = deltaTime.asSeconds(); // ïðåîáðàçîâàíèå â ñåêóíäû
+	sf::Time deltaTime = clock.restart(); // getting elapsed time
+	float deltaTimeSeconds = deltaTime.asSeconds(); // conversion to seconds
 
 	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.1f) { // âðåìÿ ìåæäó ñïðàéòàìè
+	if (elapsedTime >= 0.1f) { // time between sprites
 		currentFrame++;
-		if (currentFrame > 15) { // êîëè÷åñòâî ñïðàéòîâ â îäíîì öèêëå
+		if (currentFrame > 14) { // number of sprites - 1 in one cycle
 			currentFrame = 0;
 		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // óñòàíîâêà íîâîãî ïðÿìîóãîëüíèêà òåêñòóðû
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // set new texture rect 
 		elapsedTime = 0.0f;
 	}
 }
@@ -350,7 +352,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		withWeapon = true;
 		gunBorder.setSize(sf::Vector2f(0, 0));
 		sprite.setTextureRect(sf::IntRect(0, 64, 32, 32));
-		std::cout << "gun\n";
+		// std::cout << "gun\n";
 	}
 	// drop a weapon
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && withWeapon && timer(time))

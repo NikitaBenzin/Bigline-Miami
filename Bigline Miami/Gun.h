@@ -8,11 +8,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 
-	// Create the rectangle around gun sprite
-	//sf::RectangleShape border;
-
-	// Private variables
-
+	unsigned short pistolAmmo;
 
 	// Privat functions
 	void initVariables();
@@ -29,11 +25,14 @@ public:
 	float getPositionX();
 	float getPositionY();
 
+	unsigned short getPistolAmmo();
+
 	void makeInvisible();
 	void makeVisible();
 
 	void dropTheWeapon(float player_pos_x, float player_pos_y);
 
+	void setPistolAmmo(unsigned short pistolAmmo);
 	void setPosition(float pos_x, float pos_y);
 	void setRotation(float rotation);
 

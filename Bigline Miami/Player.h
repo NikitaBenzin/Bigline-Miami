@@ -8,6 +8,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Clock clock;
+
 	// Create the rectangle around player sprite
 	sf::RectangleShape playerBorder;
 
@@ -35,8 +36,8 @@ private:
 	float movementSpeed;
 
 	
-	int currentFrame = 0; // òåêóùèé èíäåêñ ñïðàéòà
-	float elapsedTime = 0.0f; // ïðîøåäøåå âðåìÿ
+	int currentFrame = 0; // current frame index 
+	float elapsedTime = 0.0f; // elipsed time
 
 	
 	sf::Vector2f playerCenter;
@@ -62,6 +63,7 @@ public:
 	// Public functions
 	void move(const float dirX, const float dirY);
 
+	unsigned short getGunAmmo();
 	float getPlayerCoordinateX();
 	float getPlayerCoordinateY();
 	

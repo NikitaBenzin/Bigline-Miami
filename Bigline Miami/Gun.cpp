@@ -4,12 +4,7 @@
 
 void Gun::initVariables()
 {
-	//// Init rectangle around player
-	//border.setSize(sf::Vector2f(32, 32));
-	//border.scale(1.5, 1.5);
-	//border.setFillColor(sf::Color::Transparent);
-	//border.setOutlineColor(sf::Color::Red);
-	//border.setOutlineThickness(2);
+	pistolAmmo = 6;
 }
 
 void Gun::initTexture()
@@ -29,8 +24,6 @@ void Gun::initSprite()
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	// sprite.setRotation(45);
 	sprite.setPosition(500, 400);
-
-	//border.setPosition(sf::Vector2f(getPositionX() - 24, getPositionY() - 24));
 }
 
 float Gun::getPositionX()
@@ -41,6 +34,11 @@ float Gun::getPositionX()
 float Gun::getPositionY()
 {
 	return sprite.getPosition().y;
+}
+
+unsigned short Gun::getPistolAmmo()
+{
+	return pistolAmmo;
 }
 
 void Gun::makeInvisible()
@@ -56,6 +54,11 @@ void Gun::makeVisible()
 void Gun::dropTheWeapon(float player_pos_x, float player_pos_y)
 {
 	sprite.setPosition(sf::Vector2f(player_pos_x, player_pos_y));
+}
+
+void Gun::setPistolAmmo(unsigned short pistolAmmo)
+{
+	this->pistolAmmo = pistolAmmo;
 }
 
 void Gun::setPosition(float pos_x, float pos_y)
@@ -80,6 +83,7 @@ Gun::Gun()
 
 Gun::~Gun()
 {
+
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 

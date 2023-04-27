@@ -20,11 +20,16 @@ void Game::initVariables()
     playerDead = false;
 
     time = sf::seconds(0.1f);
+
+    // font
+    font.loadFromFile("fonts/mainFont.otf");
+    mainColor = sf::Color(230, 120, 57);
+    mainOutlineColor = sf::Color(33, 24, 27);
 }
 
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
+    window = new sf::RenderWindow(sf::VideoMode(1700, 800), "Bigline Miami");
     window->setFramerateLimit(60);
 }
 
@@ -40,6 +45,25 @@ void Game::initPlayer()
     player = new Player(*window);
 }
 
+void Game::initText()
+{
+    // ammo text
+    ammoText.setFont(font);
+    ammoText.setCharacterSize(42);
+    ammoText.setFillColor(mainColor);
+    ammoText.setOutlineThickness(2);
+    ammoText.setOutlineColor(mainOutlineColor);
+    ammoText.setPosition(50, window->getSize().y - 75);
+
+    // restart Text
+    restartText.setFont(font);
+    restartText.setCharacterSize(42);
+    restartText.setFillColor(mainColor);
+    restartText.setOutlineThickness(2);
+    restartText.setOutlineColor(mainOutlineColor);
+    restartText.setPosition(window->getSize().x / 2 - 175, window->getSize().y / 2 - 50);
+}
+
 void Game::initEnemy()
 {
     enemy = new Enemy;
@@ -48,12 +72,14 @@ void Game::initEnemy()
 void Game::initBullet()
 {
     bulletFirst = (new Bullet(textures["BULLET"],
-        player->getPlayerCoordinateX() - 29,
-        player->getPlayerCoordinateY() - 74,
+        ammoText.getPosition().x - 35,
+        ammoText.getPosition().y + 10,
         0.f,
         0.f,
         5.f,
-        0.f));
+        270.f));
+    bulletFirst->sprite.setScale(1.2,1.2);
+    bulletFirst->sprite.setColor(sf::Color::Transparent);
 }
 
 /**
@@ -70,6 +96,7 @@ void Game::restart()
     initEnemy();
     
     playerDead = false;
+    restartText.setString("");
 }
 
 
@@ -81,6 +108,7 @@ Game::Game()
     initWindow();
     initVariables();
     initTextures();
+    initText();
     initPlayer();
     initEnemy();
     initBullet();
@@ -104,6 +132,7 @@ Game::~Game()
     {
         delete i;
     }
+
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
@@ -117,18 +146,6 @@ void Game::run()
     }
 }
 
-void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
-{
-    // Kill the player if player was attacked by enemy
-    if (enemy->updateEnemyMove(playerPosition, bounds))
-    {
-        //std::cout << "Player DEAD!!!!\n";
-        enemy->enemyAttackAnimation();
-        player->setTexture(0, 97, 32, 32);
-        enemy->stop();
-        playerDead = true;
-    }
-}
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 /**
@@ -143,7 +160,6 @@ void Game::update()
     {
         updateInput();
 
-
         mousePosition = sf::Mouse::getPosition(*window);
         player->update(mousePosition, *window, view);
         enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
@@ -152,6 +168,31 @@ void Game::update()
 
         updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
     }
+
+    updateText();
+}
+
+void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
+{
+    // Kill the player if player was attacked by enemy
+    if (enemy->updateEnemyMove(playerPosition, bounds) && !enemy->getEnemyDead())
+    {
+        //std::cout << "Player DEAD!!!!\n";
+        player->setTexture(0, 97, 32, 32);
+        enemy->stop();
+        playerDead = true;
+        restartText.setString("Press 'R' to restart");
+    }
+
+    for (size_t i = 0; i < bullets.size(); i++)
+    {
+        if (enemy->getBounds().intersects(bullets[i]->getBounds()) && !enemy->getEnemyDead())
+        {
+            enemy->setTexture(0, 64, 32, 32);
+            enemy->setDead(true);
+        }
+    }
+    
 }
 
 void Game::updateBullets()
@@ -199,9 +240,27 @@ void Game::updateInput()
                 currVelocity.y, 
                 9.f,
                 player->getRotation()));
-           
+            
         }
         else player->setTexture(0, 64, 32, 32);
+    }
+}
+
+
+void Game::updateText()
+{
+    if (player->WithWeapon())
+    {
+        ammo = std::to_string(player->getGunAmmo());
+        ammoText.setString(ammo);
+        bulletFirst->sprite.setColor(sf::Color::White);
+    }
+    else
+    {
+        // delete text
+        ammoText.setString("");
+        window->draw(ammoText);
+        bulletFirst->sprite.setColor(sf::Color::Transparent);
     }
 }
 
@@ -221,13 +280,14 @@ void Game::render()
     player->render(*window);
 
     enemy->render(*window);
-
     for (auto* bullet : bullets)
     {
         bullet->render(*window);
     }
-
-    //window->draw(shape);
+    bulletFirst->render(*window);
+    window->draw(ammoText);
+    
+    window->draw(restartText);
 
 	window->display();
 }
