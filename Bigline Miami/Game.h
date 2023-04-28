@@ -62,6 +62,7 @@ private:
 
 	// restart function
 	void restart();
+	void clearEnemies();
 
 public:
 	// Constructor / Destructor

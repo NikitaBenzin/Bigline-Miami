@@ -66,10 +66,10 @@ void Game::initText()
 
 void Game::initEnemies()
 {
-    enemy = new Enemy();
-    enemies.push_back(new Enemy(50, 100, false));
-    enemies.push_back(new Enemy(50, 400, false));
-    enemies.push_back(new Enemy(50, 700, false));
+    enemy = new Enemy(0, 0, true);
+    enemies.push_back(new Enemy(150, 100, false));
+    enemies.push_back(new Enemy(150, 400, false));
+    enemies.push_back(new Enemy(150, 700, false));
 }
 
 void Game::initBullet()
@@ -94,12 +94,23 @@ void Game::restart()
 {
     delete player;
     delete enemy;
+    clearEnemies();
 
     initPlayer();
     initEnemies();
     
     playerDead = false;
     restartText.setString("");
+}
+
+void Game::clearEnemies()
+{
+    enemies.clear();
+    // Delete enemies
+    for (size_t i = 0; i < enemies.size(); i++)
+    {
+        delete enemies[i];
+    }
 }
 
 
@@ -170,15 +181,6 @@ void Game::update()
 
         mousePosition = sf::Mouse::getPosition(*window);
         player->update(mousePosition, *window, view);
-        
-        for (size_t i = 0; i < enemies.size(); i++)
-        {
-            if (!enemies[i]->getEnemyDead())
-            {
-                enemies[i]->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
-            }
-            else enemies[i]->updateEnemyDead();
-        }
 
         updateBullets();
 
@@ -190,16 +192,20 @@ void Game::update()
 
 void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
-    // Kill the player if player was attacked by enemy
-    if (!enemy->getEnemyDead() && enemy->updateEnemyMove(playerPosition, bounds))
+    for (size_t i = 0; i < enemies.size(); i++)
     {
-        //std::cout << "Player DEAD!!!!\n";
-        player->setTexture(0, 97, 32, 32);
-        enemy->stop();
-        playerDead = true;
-        restartText.setString("Press 'R' to restart");
-    }
+        // Kill the player if player was attacked by enemy
+        if (!enemies[i]->getEnemyDead() && enemies[i]->updateEnemyMove(playerPosition, bounds))
+        {
+            //std::cout << "Player DEAD!!!!\n";
+            player->setTexture(0, 97, 32, 32);
 
+            enemies[i]->stop();
+
+            playerDead = true;
+            restartText.setString("Press 'R' to restart");
+        }
+    }
     
     
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right) 
@@ -226,6 +232,7 @@ void Game::updateBullets()
     for (size_t i = 0; i < bullets.size(); i++)
     {
         bullets[i]->update();
+
         // delete bullet if collision with window
         if (bullets[i]->sprite.getPosition().x < 0
             || bullets[i]->sprite.getPosition().x > window->getSize().x
@@ -233,25 +240,28 @@ void Game::updateBullets()
             || bullets[i]->sprite.getPosition().y > window->getSize().y)
         {
             bullets.erase(bullets.begin() + i);
+        }
 
-            for (size_t i = 0; i < enemies.size(); i++)
+        for (size_t j = 0; j < enemies.size(); j++)
+        {
+            if (!bullets.empty() && enemies[j]->getBounds().intersects(bullets[i]->getBounds()) &&!enemies[j]->getEnemyDead())
             {
-                if (enemies[i]->getBounds().intersects(bullets[i]->getBounds()) && !enemies[i]->getEnemyDead())
-                {
-                    enemies[i]->setDead(true);
-                    bullets.erase(bullets.begin() + i);
-                }
-                
+                enemies[j]->setTexture(0, 64, 32, 32);
+                enemies[j]->setDead(true);
                 
             }
-            
         }
-    }
-}
 
-void Game::updateEnemies()
-{
-    
+        
+    }
+    for (size_t i = 0; i < enemies.size(); i++)
+    {
+        if (!enemies[i]->getEnemyDead())
+        {
+            enemies[i]->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+        }
+        
+    }
 }
 
 void Game::updatePollEvents()
