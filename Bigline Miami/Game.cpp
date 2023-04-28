@@ -25,7 +25,7 @@ void Game::initVariables()
     font.loadFromFile("fonts/mainFont.otf");
     mainColor = sf::Color(230, 120, 57);
     mainOutlineColor = sf::Color(33, 24, 27);
-}
+} 
 
 void Game::initWindow()
 {
@@ -64,9 +64,12 @@ void Game::initText()
     restartText.setPosition(window->getSize().x / 2 - 175, window->getSize().y / 2 - 50);
 }
 
-void Game::initEnemy()
+void Game::initEnemies()
 {
-    enemy = new Enemy;
+    enemy = new Enemy();
+    enemies.push_back(new Enemy(50, 100, false));
+    enemies.push_back(new Enemy(50, 400, false));
+    enemies.push_back(new Enemy(50, 700, false));
 }
 
 void Game::initBullet()
@@ -93,7 +96,7 @@ void Game::restart()
     delete enemy;
 
     initPlayer();
-    initEnemy();
+    initEnemies();
     
     playerDead = false;
     restartText.setString("");
@@ -110,7 +113,7 @@ Game::Game()
     initTextures();
     initText();
     initPlayer();
-    initEnemy();
+    initEnemies();
     initBullet();
 }
 
@@ -133,6 +136,11 @@ Game::~Game()
         delete i;
     }
 
+    // Delete enemies
+    for (auto* i : enemies)
+    {
+        delete i;
+    }
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
@@ -163,11 +171,14 @@ void Game::update()
         mousePosition = sf::Mouse::getPosition(*window);
         player->update(mousePosition, *window, view);
         
-        if (!enemy->getEnemyDead())
+        for (size_t i = 0; i < enemies.size(); i++)
         {
-            enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+            if (!enemies[i]->getEnemyDead())
+            {
+                enemies[i]->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+            }
+            else enemies[i]->updateEnemyDead();
         }
-        else enemy->updateEnemyDead();
 
         updateBullets();
 
@@ -189,15 +200,24 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
         restartText.setString("Press 'R' to restart");
     }
 
-    for (size_t i = 0; i < bullets.size(); i++)
-    {
-        if (enemy->getBounds().intersects(bullets[i]->getBounds()) && !enemy->getEnemyDead())
-        {
-            enemy->setDead(true);
-            bullets.erase(bullets.begin() + i);
-        }
-    }
     
+    
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) 
+        && enemy->knifeCollision(player->getPlayerGlobalBounds()) 
+        && player->timer(time)
+        && !enemy->getKnifeTaken())
+    {
+        enemy->setKnifeInvisible();
+        enemy->setKnifeTaken(true);
+    }
+    else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)
+        && player->timer(time)
+        && enemy->getKnifeTaken())
+    {
+        enemy->setKnifeTaken(false);
+        enemy->setKnifePosition(player->getRotation(), player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+    }
+
 }
 
 void Game::updateBullets()
@@ -213,8 +233,25 @@ void Game::updateBullets()
             || bullets[i]->sprite.getPosition().y > window->getSize().y)
         {
             bullets.erase(bullets.begin() + i);
+
+            for (size_t i = 0; i < enemies.size(); i++)
+            {
+                if (enemies[i]->getBounds().intersects(bullets[i]->getBounds()) && !enemies[i]->getEnemyDead())
+                {
+                    enemies[i]->setDead(true);
+                    bullets.erase(bullets.begin() + i);
+                }
+                
+                
+            }
+            
         }
     }
+}
+
+void Game::updateEnemies()
+{
+    
 }
 
 void Game::updatePollEvents()
@@ -282,14 +319,21 @@ void Game::render()
 
 	// Draw staff here...
 
+    for (auto* enemy : enemies)
+    {
+        enemy->render(*window);
+    }
+
+    
     player->render(*window);
 
-    enemy->render(*window);
+    
     for (auto* bullet : bullets)
     {
         bullet->render(*window);
     }
     bulletFirst->render(*window);
+    
     window->draw(ammoText);
     
     window->draw(restartText);

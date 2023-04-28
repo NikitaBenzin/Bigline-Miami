@@ -12,6 +12,11 @@ private:
 	// Create triangle which will be enemy view
 	sf::ConvexShape triangle;
 
+	// knife 
+	sf::Sprite knife;
+	sf::Texture knifeTexture;
+
+
 	// Enemy rotation
 	float rotation;
 	float dx;
@@ -28,15 +33,18 @@ private:
 	float deltaTime;
 	float length;
 
+	bool knifeTaken;
+
 	// Privat functions
 	void initVariables();
 	void initTexture();
-	void initSprite();
+	void initSprite(float pos_x, float pos_y);
 	void initTriangle();
 
 public:
 	// Constructor / Destructor
 	Enemy();
+	Enemy(float pos_x, float pos_y, bool is_dead);
 	~Enemy();
 
 	float getEnemyPosX();
@@ -53,6 +61,13 @@ public:
 	bool getEnemyDead();
 
 	void stop();
+
+	bool knifeCollision(sf::FloatRect playerBounds);
+
+	void setKnifeInvisible();
+	void setKnifePosition(float plyerRotation, float pos_x, float pos_y);
+	void setKnifeTaken(bool withKnife);
+	bool getKnifeTaken();
 
 	void updateEnemyDead();
 	bool updateEnemyView(sf::FloatRect bounds);

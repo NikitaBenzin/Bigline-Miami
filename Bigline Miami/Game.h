@@ -40,7 +40,7 @@ private:
 
 	// Enemy
 	Enemy* enemy;
-	
+	std::vector<Enemy*> enemies;
 
 	sf::View view;
 
@@ -54,9 +54,10 @@ private:
 	void initVariables();
 	void initWindow();
 	void initTextures();
+	void initEnemies();
 	void initText();
 	void initPlayer();
-	void initEnemy();
+	
 	void initBullet();
 
 	// restart function
@@ -74,6 +75,7 @@ public:
 	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void update();
 	void updateBullets();
+	void updateEnemies();
 	void updatePollEvents();
 	void updateInput();
 	

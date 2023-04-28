@@ -15,20 +15,29 @@ void Enemy::initVariables()
     length = 100;
 
     enemyDead = false;
+    knifeTaken = false;
 }
 
 void Enemy::initTexture()
 {
     texture.loadFromFile("textures/enemy-spritesheet.png");
+    knifeTexture.loadFromFile("textures/knife.png");
 }
 
-void Enemy::initSprite()
+void Enemy::initSprite(float pos_x, float pos_y)
 {
+    // enemy sprite
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
     sprite.scale(4, 4);
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-    sprite.setPosition(sf::Vector2f(100.f,350.f));
+    sprite.setPosition(pos_x, pos_y);
+
+    // knife
+    knife.setTexture(knifeTexture);
+    knife.setScale(3, 3);
+    knife.setOrigin(knife.getLocalBounds().width / 2, knife.getLocalBounds().height / 2);
+    knife.setPosition(500, 500);
 }
 
 void Enemy::initTriangle()
@@ -49,11 +58,17 @@ void Enemy::initTriangle()
 
 Enemy::Enemy()
 {
+}
+
+
+Enemy::Enemy(float pos_x, float pos_y, bool is_dead)
+{
     initVariables();
     initTexture();
-    initSprite();
+    initSprite(pos_x, pos_y);
     initTriangle();
 }
+
 
 Enemy::~Enemy()
 {
@@ -81,7 +96,6 @@ void Enemy::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
 }
 
 
-// ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
 void Enemy::enemyWalkAnimaton()
 {
@@ -89,15 +103,17 @@ void Enemy::enemyWalkAnimaton()
     float deltaTimeSeconds = deltaTimeForAnim.asSeconds();
 
     elapsedTime += deltaTimeSeconds * 4;
-    if (elapsedTime >= 0.1f) { 
+    if (elapsedTime >= 0.1f) {
         currentFrame++;
-        if (currentFrame > 11) { 
+        if (currentFrame > 11) {
             currentFrame = 0;
         }
-        sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); 
+        sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32));
         elapsedTime = 0.0f;
     }
 }
+
+
 
 void Enemy::enemyAttackAnimation()
 {
@@ -105,12 +121,12 @@ void Enemy::enemyAttackAnimation()
     float deltaTimeSeconds = deltaTimeForAnim.asSeconds();
 
     elapsedTime += deltaTimeSeconds * 4;
-    if (elapsedTime >= 0.07f) { 
+    if (elapsedTime >= 0.07f) {
         currentFrame++;
         if (currentFrame > 5) {
             currentFrame = 0;
         }
-        sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); 
+        sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32));
         elapsedTime = 0.0f;
     }
 }
@@ -134,6 +150,41 @@ void Enemy::stop()
 {
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
 }
+
+void Enemy::setKnifeInvisible()
+{
+    knife.setColor(sf::Color::Transparent);
+}
+
+void Enemy::setKnifePosition(float plyerRotation, float pos_x, float pos_y)
+{
+    knife.setRotation(plyerRotation);
+    knife.setPosition(pos_x, pos_y);
+    knife.setColor(sf::Color::White);
+}
+
+void Enemy::setKnifeTaken(bool withKnife)
+{
+    knifeTaken = withKnife;
+};
+
+bool Enemy::getKnifeTaken()
+{
+    return knifeTaken;
+};
+
+bool Enemy::knifeCollision(sf::FloatRect playerBounds)
+{
+    if (knife.getGlobalBounds().intersects(playerBounds))
+    {
+        return true;
+    }
+    return false;
+}
+
+// ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
+
+
 
 bool Enemy::updateEnemyView(sf::FloatRect bounds)
 {
@@ -216,4 +267,6 @@ void Enemy::render(sf::RenderTarget& target)
 {
     target.draw(triangle);
     target.draw(sprite);
+    target.draw(knife);
 }
+
