@@ -63,6 +63,7 @@ Enemy::Enemy()
 
 Enemy::Enemy(float pos_x, float pos_y, bool is_dead)
 {
+    enemyDead = is_dead;
     initVariables();
     initTexture();
     initSprite(pos_x, pos_y);
