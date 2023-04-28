@@ -162,7 +162,12 @@ void Game::update()
 
         mousePosition = sf::Mouse::getPosition(*window);
         player->update(mousePosition, *window, view);
-        enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+        
+        if (!enemy->getEnemyDead())
+        {
+            enemy->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+        }
+        else enemy->updateEnemyDead();
 
         updateBullets();
 
@@ -175,7 +180,7 @@ void Game::update()
 void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     // Kill the player if player was attacked by enemy
-    if (enemy->updateEnemyMove(playerPosition, bounds) && !enemy->getEnemyDead())
+    if (!enemy->getEnemyDead() && enemy->updateEnemyMove(playerPosition, bounds))
     {
         //std::cout << "Player DEAD!!!!\n";
         player->setTexture(0, 97, 32, 32);
@@ -188,8 +193,8 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
     {
         if (enemy->getBounds().intersects(bullets[i]->getBounds()) && !enemy->getEnemyDead())
         {
-            enemy->setTexture(0, 64, 32, 32);
             enemy->setDead(true);
+            bullets.erase(bullets.begin() + i);
         }
     }
     
@@ -201,7 +206,7 @@ void Game::updateBullets()
     for (size_t i = 0; i < bullets.size(); i++)
     {
         bullets[i]->update();
-
+        // delete bullet if collision with window
         if (bullets[i]->sprite.getPosition().x < 0
             || bullets[i]->sprite.getPosition().x > window->getSize().x
             || bullets[i]->sprite.getPosition().y < 0

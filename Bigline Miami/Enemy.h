@@ -18,7 +18,7 @@ private:
 	float dy;
 
 	float movementSpeed;
-	bool enemyDead = false;
+	bool enemyDead;
 	// for animations
 	sf::Time deltaTimeForAnim;
 	int currentFrame = 0; 
@@ -54,6 +54,7 @@ public:
 
 	void stop();
 
+	void updateEnemyDead();
 	bool updateEnemyView(sf::FloatRect bounds);
 	bool updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void updateEnemyRotation(sf::Vector2f playerPosition);

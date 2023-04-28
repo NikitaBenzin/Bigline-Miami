@@ -14,6 +14,7 @@ void Enemy::initVariables()
 
     length = 100;
 
+    enemyDead = false;
 }
 
 void Enemy::initTexture()
@@ -147,10 +148,18 @@ bool Enemy::updateEnemyView(sf::FloatRect bounds)
 
 }
 
+void Enemy::updateEnemyDead()
+{
+    if (enemyDead)
+    {
+        sprite.setTextureRect(sf::IntRect(0, 64, 32, 32)); // start frame
+    }
+}
+
 bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     
-    if (updateEnemyView(bounds) && !enemyDead)
+    if (updateEnemyView(bounds))
     {
         // std::cout << length << std::endl;  50
         if (length > 0)
@@ -193,12 +202,12 @@ void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 
 void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
-    if (updateEnemyView(bounds) && !enemyDead)
+    updateEnemyDead();
+
+    if (updateEnemyView(bounds))
     {
         updateEnemyRotation(playerPosition);
     }
-
-    
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 
