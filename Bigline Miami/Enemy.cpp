@@ -15,13 +15,11 @@ void Enemy::initVariables()
     length = 100;
 
     enemyDead = false;
-    knifeTaken = false;
 }
 
 void Enemy::initTexture()
 {
     texture.loadFromFile("textures/enemy-spritesheet.png");
-    knifeTexture.loadFromFile("textures/knife.png");
 }
 
 void Enemy::initSprite(float pos_x, float pos_y)
@@ -32,12 +30,6 @@ void Enemy::initSprite(float pos_x, float pos_y)
     sprite.scale(4, 4);
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
     sprite.setPosition(pos_x, pos_y);
-
-    // knife
-    knife.setTexture(knifeTexture);
-    knife.setScale(3, 3);
-    knife.setOrigin(knife.getLocalBounds().width / 2, knife.getLocalBounds().height / 2);
-    knife.setPosition(500, 500);
 }
 
 void Enemy::initTriangle()
@@ -45,8 +37,8 @@ void Enemy::initTriangle()
     // enemy view
     triangle.setPointCount(3);
     triangle.setPoint(0, sf::Vector2f(0, 0));
-    triangle.setPoint(1, sf::Vector2f(250, -150));
-    triangle.setPoint(2, sf::Vector2f(250, 150));
+    triangle.setPoint(1, sf::Vector2f(450, -150));
+    triangle.setPoint(2, sf::Vector2f(450, 150));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
     /*triangle.setOutlineColor(sf::Color::Green);
@@ -134,7 +126,12 @@ void Enemy::enemyAttackAnimation()
 
 sf::FloatRect Enemy::getBounds()
 {
-    return sprite.getGlobalBounds();
+    float newWidth = sprite.getGlobalBounds().width / 2.0f;
+    float newHeight = sprite.getGlobalBounds().height / 2.0f;
+    float newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    float newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
 void Enemy::setDead(bool dead)
@@ -150,37 +147,6 @@ bool Enemy::getEnemyDead()
 void Enemy::stop()
 {
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
-}
-
-void Enemy::setKnifeInvisible()
-{
-    knife.setColor(sf::Color::Transparent);
-}
-
-void Enemy::setKnifePosition(float plyerRotation, float pos_x, float pos_y)
-{
-    knife.setRotation(plyerRotation);
-    knife.setPosition(pos_x, pos_y);
-    knife.setColor(sf::Color::White);
-}
-
-void Enemy::setKnifeTaken(bool withKnife)
-{
-    knifeTaken = withKnife;
-};
-
-bool Enemy::getKnifeTaken()
-{
-    return knifeTaken;
-};
-
-bool Enemy::knifeCollision(sf::FloatRect playerBounds)
-{
-    if (knife.getGlobalBounds().intersects(playerBounds))
-    {
-        return true;
-    }
-    return false;
 }
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
@@ -268,6 +234,5 @@ void Enemy::render(sf::RenderTarget& target)
 {
     target.draw(triangle);
     target.draw(sprite);
-    target.draw(knife);
 }
 

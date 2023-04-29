@@ -12,11 +12,6 @@ private:
 	// Create triangle which will be enemy view
 	sf::ConvexShape triangle;
 
-	// knife 
-	sf::Sprite knife;
-	sf::Texture knifeTexture;
-
-
 	// Enemy rotation
 	float rotation;
 	float dx;
@@ -33,7 +28,6 @@ private:
 	float deltaTime;
 	float length;
 
-	bool knifeTaken;
 
 	// Privat functions
 	void initVariables();
@@ -62,13 +56,7 @@ public:
 
 	void stop();
 
-	bool knifeCollision(sf::FloatRect playerBounds);
-
-	void setKnifeInvisible();
-	void setKnifePosition(float plyerRotation, float pos_x, float pos_y);
-	void setKnifeTaken(bool withKnife);
-	bool getKnifeTaken();
-
+	
 	void updateEnemyDead();
 	bool updateEnemyView(sf::FloatRect bounds);
 	bool updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds);

@@ -113,6 +113,11 @@ void Game::clearEnemies()
     }
 }
 
+void Game::initKnife()
+{
+    knife = new Knife;
+}
+
 
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -123,6 +128,7 @@ Game::Game()
     initVariables();
     initTextures();
     initText();
+    initKnife();
     initPlayer();
     initEnemies();
     initBullet();
@@ -131,6 +137,7 @@ Game::Game()
 Game::~Game()
 {
     delete player;
+    delete knife;
     delete enemy;
     delete bulletFirst;
     delete window;
@@ -209,21 +216,24 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
     
     
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right) 
-        && enemy->knifeCollision(player->getPlayerGlobalBounds()) 
-        && player->timer(time)
-        && !enemy->getKnifeTaken())
+        && knife->knifeCollision(player->getPlayerGlobalBounds()) 
+        && knife->timer()
+        && !player->WithWeapon())
     {
-        enemy->setKnifeInvisible();
-        enemy->setKnifeTaken(true);
+        knife->setKnifeInvisible(true);
+        player->setWithKnife(true);
+        player->setTexture(0, 128, 32, 32);
     }
     else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)
-        && player->timer(time)
-        && enemy->getKnifeTaken())
+        && knife->timer()
+        && player->WithKnife())
     {
-        enemy->setKnifeTaken(false);
-        enemy->setKnifePosition(player->getRotation(), player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        knife->setKnifeInvisible(false);
+        knife->setKnifePosition(player->getRotation(), player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        player->setWithKnife(false);
     }
 
+    
 }
 
 void Game::updateBullets()
@@ -246,6 +256,7 @@ void Game::updateBullets()
         {
             if (!bullets.empty() && enemies[j]->getBounds().intersects(bullets[i]->getBounds()) &&!enemies[j]->getEnemyDead())
             {
+                bullets.erase(bullets.begin() + i);
                 enemies[j]->setTexture(0, 64, 32, 32);
                 enemies[j]->setDead(true);
                 
@@ -285,16 +296,28 @@ void Game::updateInput()
         if (player->canAttack())
         {
             player->setTexture(32, 64, 32, 32);
-            bullets.push_back(new Bullet(textures["BULLET"], 
-                player->getPlayerCoordinateX() ,
-                player->getPlayerCoordinateY() ,
-                currVelocity.x, 
-                currVelocity.y, 
+            bullets.push_back(new Bullet(textures["BULLET"],
+                player->getPlayerCoordinateX(),
+                player->getPlayerCoordinateY(),
+                currVelocity.x,
+                currVelocity.y,
                 9.f,
                 player->getRotation()));
-            
+
         }
         else player->setTexture(0, 64, 32, 32);
+    }
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->WithKnife())
+    {
+        for (size_t j = 0; j < enemies.size(); j++)
+        {
+            if (enemies[j]->getBounds().intersects(player->getPlayerGlobalBounds()) && !enemies[j]->getEnemyDead())
+            {
+                enemies[j]->setTexture(0, 64, 32, 32);
+                enemies[j]->setDead(true);
+            }
+        }
     }
 }
 
@@ -334,7 +357,8 @@ void Game::render()
         enemy->render(*window);
     }
 
-    
+    knife->render(*window);
+
     player->render(*window);
 
     

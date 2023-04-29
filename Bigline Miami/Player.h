@@ -20,6 +20,7 @@ private:
 
 	sf::Time time;
 	bool withWeapon;
+	bool withKnife;
 
 	float attackCooldown;
 	float attackCooldownMax;
@@ -31,6 +32,7 @@ private:
 
 	sf::Clock attackTimer;
 	sf::Int32 attackTimerMax;
+	sf::Int32 knifeAttackTimerMax;
 
 	// Private variables
 	float movementSpeed;
@@ -73,13 +75,17 @@ public:
 
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
 
+	void setWithKnife(bool withKnife);
 
 	// Actions with weapon
 	bool weaponCollision();
+	void knifeAttackAnimation();
 	void attackAnimation();
 	const bool getAttackTimer();
+	const bool getAttackTimer(sf::Int32 TimerMax);
 	const bool canAttack();
 	bool WithWeapon();
+	bool WithKnife();
 
 	sf::FloatRect getPlayerGlobalBounds();
 

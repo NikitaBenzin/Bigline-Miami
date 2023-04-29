@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Knife.h"
 
 class Game
 {
@@ -42,8 +43,12 @@ private:
 	Enemy* enemy;
 	std::vector<Enemy*> enemies;
 
-	sf::View view;
+	// knife
+	Knife* knife;
 
+
+
+	sf::View view;
 	sf::Vector2i mousePosition;
 
 	float xForBullet;
@@ -57,6 +62,7 @@ private:
 	void initEnemies();
 	void initText();
 	void initPlayer();
+	void initKnife();
 	
 	void initBullet();
 

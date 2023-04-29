@@ -9,12 +9,14 @@ void Player::initVariables()
 	movementSpeed = 10.f;
 
 	withWeapon = false;
+	withKnife = false;
 
 	time = sf::seconds(0.1f);
 
 	// Set variables for attack
 	attackTimer.restart();
-	attackTimerMax = 1;
+	attackTimerMax = 25;
+	knifeAttackTimerMax = 55;
 	attackCooldownMax = 20.f;
 	attackCooldown = attackCooldownMax;
 
@@ -127,6 +129,11 @@ void Player::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight
 	sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
 }
 
+void Player::setWithKnife(bool withKnife)
+{
+	this->withKnife = withKnife;
+}
+
 // weapon collision
 bool Player::weaponCollision()
 {
@@ -142,18 +149,34 @@ bool Player::weaponCollision()
 	else return false;
 }
 
-void Player::attackAnimation()
+void Player::knifeAttackAnimation()
 {
-	sf::Time deltaTime = clock.restart(); // ïîëó÷åíèå ïðîøåäøåãî âðåìåíè
-	float deltaTimeSeconds = deltaTime.asSeconds(); // ïðåîáðàçîâàíèå â ñåêóíäû
+	sf::Time deltaTime = clock.restart(); 
+	float deltaTimeSeconds = deltaTime.asSeconds(); 
 
 	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.07f) { // âðåìÿ ìåæäó ñïðàéòàìè
+	if (elapsedTime >= 0.07f) {
 		currentFrame++;
-		if (currentFrame > 8) { // êîëè÷åñòâî ñïðàéòîâ â îäíîì öèêëå
+		if (currentFrame > 3) {
 			currentFrame = 0;
 		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); // óñòàíîâêà íîâîãî ïðÿìîóãîëüíèêà òåêñòóðû
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 128, 32, 32)); 
+		elapsedTime = 0.0f;
+	}
+}
+
+void Player::attackAnimation()
+{
+	sf::Time deltaTime = clock.restart(); 
+	float deltaTimeSeconds = deltaTime.asSeconds(); 
+
+	elapsedTime += deltaTimeSeconds * 4;
+	if (elapsedTime >= 0.07f) {
+		currentFrame++;
+		if (currentFrame > 8) {
+			currentFrame = 0;
+		}
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); 
 		elapsedTime = 0.0f;
 	}
 }
@@ -161,6 +184,16 @@ void Player::attackAnimation()
 const bool Player::getAttackTimer()
 {
 	if (attackTimer.getElapsedTime().asMilliseconds() >= attackTimerMax)
+	{
+		attackTimer.restart();
+		return true;
+	}
+	return false;
+}
+
+const bool Player::getAttackTimer(sf::Int32 TimerMax)
+{
+	if (attackTimer.getElapsedTime().asMilliseconds() >= TimerMax)
 	{
 		attackTimer.restart();
 		return true;
@@ -185,9 +218,19 @@ bool Player::WithWeapon()
 	return withWeapon;
 }
 
+bool Player::WithKnife()
+{
+	return withKnife;
+}
+
 sf::FloatRect Player::getPlayerGlobalBounds()
 {
-	return sprite.getGlobalBounds();
+	float newWidth = sprite.getGlobalBounds().width / 2.0f;
+	float newHeight = sprite.getGlobalBounds().height / 2.0f;
+	float newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+	float newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+	return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
 // Walk Animation
@@ -220,10 +263,9 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 {
 
 	// Move player
-	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
 		sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
-		sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
 		// W 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -231,7 +273,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			window.setView(view);*/
 			sprite.move(0, -5);
 
-			if (!withWeapon)
+			if (!withWeapon && !withKnife)
 			{
 				// Attack without weapon
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -259,7 +301,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			sprite.move(-5, 0);
 			//view.move(-10, 0);
 			//window.setView(view);
-			if (!withWeapon)
+			if (!withWeapon && !withKnife)
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					if (getAttackTimer()) attackAnimation();
@@ -286,7 +328,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			//view.move(10, 0);
 			//window.setView(view);
 			
-			if (!withWeapon)
+			if (!withWeapon && !withKnife)
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					if (getAttackTimer()) attackAnimation();
@@ -314,7 +356,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 			//view.move(0, 10);
 			//window.setView(view);
 			
-			if (!withWeapon)
+			if (!withWeapon && !withKnife)
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					if (getAttackTimer()) attackAnimation();
@@ -337,17 +379,23 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		
 
 	}
-	else if (!withWeapon){
+	else if (!withWeapon && !withKnife){
 		sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // set sprite to the start
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !withWeapon) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !withWeapon && !withKnife) {
 		if (getAttackTimer()) attackAnimation();
 	}
 
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && withKnife )
+	{
+		if (getAttackTimer(knifeAttackTimerMax)) knifeAttackAnimation();
+	}
+	else if (withKnife) sprite.setTextureRect(sf::IntRect(0, 128, 32, 32));
+
 	// pick up a weapon
 	// right click, weapon collision and timer in 0.1s after that take the gun
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && weaponCollision() && timer(time)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && weaponCollision() && timer(time) && !withKnife) {
 		gun->makeInvisible(); 
 		withWeapon = true;
 		gunBorder.setSize(sf::Vector2f(0, 0));
@@ -366,6 +414,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 		gunBorder.setPosition(gun->getPositionX() - 32, gun->getPositionY() - 32);
 	}
 
+	
 }
 
 /**
