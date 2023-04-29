@@ -15,7 +15,7 @@ void Knife::initSprite()
 {
 	// knife
 	knife.setTexture(knifeTexture);
-	knife.setScale(3, 3);
+	knife.setScale(1.5, 1.5);
 	knife.setOrigin(knife.getLocalBounds().width / 2, knife.getLocalBounds().height / 2);
 	knife.setPosition(500, 500);
 }

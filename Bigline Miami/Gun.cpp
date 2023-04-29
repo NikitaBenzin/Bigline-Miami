@@ -20,7 +20,7 @@ void Gun::initSprite()
 {
 	// Set the texture to the sprite
 	sprite.setTexture(texture);
-	sprite.scale(2.5, 2.5);
+	sprite.scale(1.25, 1.25);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	// sprite.setRotation(45);
 	sprite.setPosition(500, 400);

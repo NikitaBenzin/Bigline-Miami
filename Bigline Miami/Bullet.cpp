@@ -15,6 +15,7 @@ Bullet::Bullet(sf::Texture* texture, float pos_x, float pos_y, float dir_x, floa
 	direction.y = dir_y;
 	movementSpeed = movement_speed;
 	sprite.setRotation(rotation + 90);
+	sprite.setScale(0.55, 0.55);
 }
 
 Bullet::~Bullet()

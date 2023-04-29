@@ -43,6 +43,7 @@ private:
 	Enemy* enemy;
 	std::vector<Enemy*> enemies;
 
+
 	// knife
 	Knife* knife;
 
@@ -78,6 +79,8 @@ public:
 	// Public functions
 	void run();
 	
+	
+
 	void updateText();
 	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void update();

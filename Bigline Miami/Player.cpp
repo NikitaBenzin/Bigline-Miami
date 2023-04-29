@@ -64,7 +64,7 @@ void Player::initSprite(sf::RenderTarget& window)
 
 	// Resize the sprite
 	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // start frame
-	sprite.scale(4, 4);
+	sprite.scale(2, 2);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
 

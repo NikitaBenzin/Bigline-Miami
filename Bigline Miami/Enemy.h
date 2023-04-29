@@ -19,6 +19,8 @@ private:
 
 	float movementSpeed;
 	bool enemyDead;
+	bool enemyCknocked;
+
 	// for animations
 	sf::Time deltaTimeForAnim;
 	int currentFrame = 0; 
@@ -28,6 +30,9 @@ private:
 	float deltaTime;
 	float length;
 
+
+	sf::Clock gameTimer;
+	sf::Int32 enemyCknockTime;
 
 	// Privat functions
 	void initVariables();
@@ -56,6 +61,10 @@ public:
 
 	void stop();
 
+	const bool timer();
+
+	void Cknocked(bool state);
+	bool getCknocked();
 	
 	void updateEnemyDead();
 	bool updateEnemyView(sf::FloatRect bounds);

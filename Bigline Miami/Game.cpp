@@ -21,10 +21,13 @@ void Game::initVariables()
 
     time = sf::seconds(0.1f);
 
+    
+
     // font
     font.loadFromFile("fonts/mainFont.otf");
     mainColor = sf::Color(230, 120, 57);
     mainOutlineColor = sf::Color(33, 24, 27);
+
 } 
 
 void Game::initWindow()
@@ -94,10 +97,12 @@ void Game::restart()
 {
     delete player;
     delete enemy;
+    delete knife;
     clearEnemies();
 
     initPlayer();
     initEnemies();
+    initKnife();
     
     playerDead = false;
     restartText.setString("");
@@ -172,7 +177,6 @@ void Game::run()
     }
 }
 
-
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 /**
 *   @ return void
@@ -202,14 +206,17 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
     for (size_t i = 0; i < enemies.size(); i++)
     {
         // Kill the player if player was attacked by enemy
-        if (!enemies[i]->getEnemyDead() && enemies[i]->updateEnemyMove(playerPosition, bounds))
+        if (!enemies[i]->getEnemyDead() 
+            && !enemies[i]->getCknocked() 
+            && enemies[i]->updateEnemyMove(playerPosition, bounds))
         {
-            //std::cout << "Player DEAD!!!!\n";
+             //std::cout << "Player DEAD!!!!\n";
             player->setTexture(0, 97, 32, 32);
 
             enemies[i]->stop();
-
+            
             playerDead = true;
+
             restartText.setString("Press 'R' to restart");
         }
     }
@@ -254,7 +261,7 @@ void Game::updateBullets()
 
         for (size_t j = 0; j < enemies.size(); j++)
         {
-            if (!bullets.empty() && enemies[j]->getBounds().intersects(bullets[i]->getBounds()) &&!enemies[j]->getEnemyDead())
+            if (!bullets.empty() && enemies[j]->getBounds().intersects(bullets[i]->getBounds()) && !enemies[j]->getEnemyDead())
             {
                 bullets.erase(bullets.begin() + i);
                 enemies[j]->setTexture(0, 64, 32, 32);
@@ -267,11 +274,22 @@ void Game::updateBullets()
     }
     for (size_t i = 0; i < enemies.size(); i++)
     {
-        if (!enemies[i]->getEnemyDead())
+        
+
+        if (!enemies[i]->getEnemyDead() && !enemies[i]->getCknocked())
         {
             enemies[i]->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
         }
-        
+
+        if (enemies[i]->getCknocked())
+        {
+            if (enemies[i]->timer())
+            {
+                enemies[i]->setTexture(0, 32, 32, 32);
+                enemies[i]->Cknocked(false);
+            }
+            
+        }
     }
 }
 
@@ -317,6 +335,23 @@ void Game::updateInput()
                 enemies[j]->setTexture(0, 64, 32, 32);
                 enemies[j]->setDead(true);
             }
+        }
+    }
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !player->WithKnife() && !player->WithWeapon())
+    {
+        for (size_t j = 0; j < enemies.size(); j++)
+        {
+            if (enemies[j]->getBounds().intersects(player->getPlayerGlobalBounds()) 
+                && !enemies[j]->getEnemyDead()
+                && !enemies[j]->getCknocked())
+            {
+                std::cout << "Ckock\n";
+                enemies[j]->setTexture(32, 64, 32, 32);
+                enemies[j]->Cknocked(true);
+                
+            }
+            
         }
     }
 }

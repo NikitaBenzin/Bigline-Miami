@@ -14,7 +14,11 @@ void Enemy::initVariables()
 
     length = 100;
 
+    gameTimer.restart();
+    enemyCknockTime = 5000;
+
     enemyDead = false;
+    enemyCknocked = false;
 }
 
 void Enemy::initTexture()
@@ -27,7 +31,7 @@ void Enemy::initSprite(float pos_x, float pos_y)
     // enemy sprite
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
-    sprite.scale(4, 4);
+    sprite.scale(2, 2);
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
     sprite.setPosition(pos_x, pos_y);
 }
@@ -149,6 +153,7 @@ void Enemy::stop()
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
 }
 
+
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
 
@@ -218,6 +223,19 @@ void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
     triangle.setRotation(rotation);
 }
 
+
+
+void Enemy::Cknocked(bool state)
+{
+    enemyCknocked = state;
+}
+
+bool Enemy::getCknocked()
+{
+    if (enemyCknocked) return true;
+    else return false;
+}
+
 void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     updateEnemyDead();
@@ -226,6 +244,16 @@ void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
     {
         updateEnemyRotation(playerPosition);
     }
+}
+
+const bool Enemy::timer()
+{
+    if (gameTimer.getElapsedTime().asMilliseconds() >= enemyCknockTime)
+    {
+        gameTimer.restart();
+        return true;
+    }
+    return false;
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 
