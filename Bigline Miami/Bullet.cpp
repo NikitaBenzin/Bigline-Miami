@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-// Constructors / Destructor
+// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
 Bullet::Bullet()
 {
 	
@@ -21,6 +21,8 @@ Bullet::Bullet(sf::Texture* texture, float pos_x, float pos_y, float dir_x, floa
 Bullet::~Bullet()
 {
 }
+
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ //
 
 const sf::FloatRect Bullet::getBounds() const
 {
