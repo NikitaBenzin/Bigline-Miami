@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "Knife.h"
+#include "Map.h"
 
 class Game
 {
@@ -15,7 +16,6 @@ private:
 	// Variables
 	sf::RenderWindow* window;
 	sf::Event event;
-	sf::CircleShape shape;
 	sf::RectangleShape worldBorder;
 
 	// Resources
@@ -47,6 +47,8 @@ private:
 	// knife
 	Knife* knife;
 
+	// MAP
+	Map* map;
 
 
 	sf::View view;
@@ -64,7 +66,7 @@ private:
 	void initText();
 	void initPlayer();
 	void initKnife();
-	
+	void initMap();
 	void initBullet();
 
 	// restart function

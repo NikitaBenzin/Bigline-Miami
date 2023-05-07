@@ -13,10 +13,7 @@ void Game::initVariables()
     worldBorder.setOutlineColor(sf::Color::Black);
     worldBorder.setOutlineThickness(1);
 
-    // view.reset(sf::FloatRect(0,0,640,480));
-    shape.setRadius(100.f);
-    shape.setFillColor(sf::Color::Green);
-    
+
     playerDead = false;
 
     time = sf::seconds(0.1f);
@@ -32,7 +29,7 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1700, 800), "Bigline Miami");
+    window = new sf::RenderWindow(sf::VideoMode(1700, 1000), "Bigline Miami");
     window->setFramerateLimit(60);
 }
 
@@ -123,6 +120,10 @@ void Game::initKnife()
     knife = new Knife;
 }
 
+void Game::initMap()
+{
+    map = new Map;
+}
 
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -137,6 +138,7 @@ Game::Game()
     initPlayer();
     initEnemies();
     initBullet();
+    initMap();
 }
 
 Game::~Game()
@@ -145,6 +147,7 @@ Game::~Game()
     delete knife;
     delete enemy;
     delete bulletFirst;
+    delete map;
     delete window;
 
     // Delete textures
@@ -376,6 +379,7 @@ void Game::updateText()
 
 
 
+
 // ------------------------------------ RENDER ------------------------------------ // 
 /**
 *   @ return void
@@ -387,6 +391,8 @@ void Game::render()
 
 	// Draw staff here...
 
+    map->render(*window);
+
     for (auto* enemy : enemies)
     {
         enemy->render(*window);
@@ -395,7 +401,6 @@ void Game::render()
     knife->render(*window);
 
     player->render(*window);
-
     
     for (auto* bullet : bullets)
     {
