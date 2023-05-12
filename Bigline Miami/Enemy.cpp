@@ -45,8 +45,8 @@ void Enemy::initTriangle()
     triangle.setPoint(2, sf::Vector2f(450, 150));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
-    /*triangle.setOutlineColor(sf::Color::Green);
-    triangle.setOutlineThickness(1);*/
+    triangle.setOutlineColor(sf::Color::Green);
+    triangle.setOutlineThickness(1);
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 }
 
@@ -138,6 +138,11 @@ sf::FloatRect Enemy::getBounds()
     return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
+sf::FloatRect Enemy::getViewBounds()
+{
+    return triangle.getGlobalBounds();
+}
+
 void Enemy::setDead(bool dead)
 {
     enemyDead = dead;
@@ -212,6 +217,8 @@ bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
     else sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
     return false;
 }
+
+
 
 void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 {

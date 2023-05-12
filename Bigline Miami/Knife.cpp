@@ -55,7 +55,7 @@ bool Knife::knifeCollision(sf::FloatRect playerBounds)
 void Knife::setKnifeInvisible(bool state)
 {
 	if (state) this->knife.setScale(0, 0);
-	else this->knife.setScale(3, 3);
+	else this->knife.setScale(1.5, 1.5);
 }
 
 void Knife::setKnifePosition(float plyerRotation, float pos_x, float pos_y)

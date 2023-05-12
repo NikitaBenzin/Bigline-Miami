@@ -73,6 +73,7 @@ public:
 
 	sf::Vector2f getAimDirNorm();
 
+	void setPlayerPosition(float pos_x, float pos_y);
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
 
 	void setWithKnife(bool withKnife);

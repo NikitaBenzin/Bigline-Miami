@@ -6,8 +6,9 @@ class Map
 {
 private:
 
-	static const short columns = 13;
-	static const short rows = 7;
+	static const short columns = 1;
+	static const short rows = 1;
+	static const short mapItems = 10;
 	int id = 0;
 
 	sf::Texture ground, corner, wall, entrance, window;
@@ -38,29 +39,24 @@ private:
 
 		' ' - clear space
 	*/
-	char map[rows][columns] =
-	{
-		(char)218, (char)209, (char)25, (char)209, (char)191, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		(char)27, (char)218, (char)209, (char)191, (char)182, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		(char)199, (char)192, (char)223, (char)217, (char)182, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		(char)199, ' ', ' ', ' ', (char)222, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		(char)27, ' ', ' ', ' ', (char)182, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		(char)192, (char)207, (char)24, (char)207, (char)217, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-		' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 
-	};
+	char map[rows][columns] = {0};
 
 	sf::Sprite *mapParts[rows * columns];
+
+	sf::RectangleShape* mapRectangles[mapItems];
 
 	void initTexture();
 	void initMapParts();
 	void initMap();
+	void initWalls();
 
 public:
 	Map();
-	~Map();
+	~Map(); 
 
-
-	void update();
+	bool updateWallCollision(sf::FloatRect bounds);
+	bool updateWallCollision(float pos_x, float pos_y);
+	void update(sf::FloatRect player_bounds);
 	void render(sf::RenderTarget& target);
 
 };

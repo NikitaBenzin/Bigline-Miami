@@ -96,7 +96,7 @@ Player::~Player()
 
 void Player::move(const float dirX, const float dirY)
 {
-	sprite.move(movementSpeed * dirX, movementSpeed * dirY);
+	sprite.move(movementSpeed * dirX, movementSpeed * dirY );
 }
 
 unsigned short Player::getGunAmmo()
@@ -122,6 +122,11 @@ float Player::getRotation()
 sf::Vector2f Player::getAimDirNorm()
 {
 	return aimDirNorm;
+}
+
+void Player::setPlayerPosition(float pos_x, float pos_y)
+{
+	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
 }
 
 void Player::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
@@ -261,121 +266,64 @@ void Player::updateAttack()
 
 void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 {
-
 	// Move player
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
 		sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
 		sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
-		// W 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			/*view.move(0, -10);
-			window.setView(view);*/
-			sprite.move(0, -5);
+		if (!withWeapon && !withKnife)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				if (getAttackTimer()) attackAnimation();
+			}
+			else {
+				walkAnimation();
+			}
 
-			if (!withWeapon && !withKnife)
-			{
-				// Attack without weapon
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (getAttackTimer()) attackAnimation();
-				}
-				else {
-					walkAnimation();
-				}
-			}
-			// Collision with player border
-			if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
-			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
-				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
-			}
 		}
+
+		// W 
+		// Collision with player border
+		if (sprite.getPosition().y < playerBorder.getPosition().y - 64)
+		{
+			playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y + 64));
+		}
+		if (sprite.getPosition().y - 16 + playerBorder.getSize().y / 2 < 16) {
+			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, 16));
+		}
+		
 
 
 		// A 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			sprite.move(-5, 0);
-			//view.move(-10, 0);
-			//window.setView(view);
-			if (!withWeapon && !withKnife)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (getAttackTimer()) attackAnimation();
-				}
-				else {
-					walkAnimation();
-				}
-
-			}
-			if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
-			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
-				sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
-			}
+		if (sprite.getPosition().x < playerBorder.getPosition().x - 64)
+		{
+			playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x + 64, sprite.getPosition().y));
 		}
+		if (sprite.getPosition().x - playerBorder.getSize().x / 2 <= 0) {
+			sprite.setPosition(sf::Vector2f(16, sprite.getPosition().y));
+		}
+		
 
 		// D 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			sprite.move(5, 0);
-			//view.move(10, 0);
-			//window.setView(view);
-			
-			if (!withWeapon && !withKnife)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (getAttackTimer()) attackAnimation();
-				}
-				else {
-					walkAnimation();
-				}
-
-			}
-			if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
-			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
-				sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
-			}
+		if (sprite.getPosition().x > playerBorder.getPosition().x + 64)
+		{
+			playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x - 64, sprite.getPosition().y));
 		}
+		if (sprite.getPosition().x + playerBorder.getSize().x / 2 >= window.getSize().x) {
+			sprite.setPosition(sf::Vector2f(window.getSize().x - 16, sprite.getPosition().y));
+		}
+		
 
 
 		// S
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			sprite.move(0, 5);
-			//view.move(0, 10);
-			//window.setView(view);
-			
-			if (!withWeapon && !withKnife)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					if (getAttackTimer()) attackAnimation();
-				}
-				else {
-					walkAnimation();
-				}
-
-			}
-			if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
-			{
-				playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
-				//view.setCenter(getPlayerCoordinateX(), getPlayerCoordinateY());
-				//window.setView(view);
-			}
-			if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
-				sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 16));
-			}
+		if (sprite.getPosition().y > playerBorder.getPosition().y + 64)
+		{
+			playerBorder.setPosition(sf::Vector2f(sprite.getPosition().x, sprite.getPosition().y - 64));
 		}
+		if (sprite.getPosition().y + 16 + playerBorder.getSize().y / 2 > window.getSize().y) {
+			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, window.getSize().y - 32));
+		}
+		
 		
 
 	}

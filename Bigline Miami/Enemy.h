@@ -55,6 +55,7 @@ public:
 	void enemyAttackAnimation();
 
 	sf::FloatRect getBounds();
+	sf::FloatRect getViewBounds();
 
 	void setDead(bool dead);
 	bool getEnemyDead();

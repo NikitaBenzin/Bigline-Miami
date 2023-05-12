@@ -67,9 +67,7 @@ void Game::initText()
 void Game::initEnemies()
 {
     enemy = new Enemy(0, 0, true);
-    enemies.push_back(new Enemy(150, 100, false));
-    enemies.push_back(new Enemy(150, 400, false));
-    enemies.push_back(new Enemy(150, 700, false));
+    enemies.push_back(new Enemy(100, 500, false));
 }
 
 void Game::initBullet()
@@ -243,7 +241,40 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
         player->setWithKnife(false);
     }
 
-    
+
+
+    // check map collision
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if (map->updateWallCollision(player->getPlayerCoordinateX(), player->getPlayerCoordinateY() - 16))
+        {
+            player->setPlayerPosition(player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        }
+        else player->move(0, -0.5);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        if (map->updateWallCollision(player->getPlayerCoordinateX() - 16, player->getPlayerCoordinateY()))
+        {
+            player->setPlayerPosition(player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        }
+        else player->move(-0.5, 0);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        if (map->updateWallCollision(player->getPlayerCoordinateX() + 16, player->getPlayerCoordinateY()))
+        {
+            player->setPlayerPosition(player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        }
+        else player->move(0.5, 0);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        if (map->updateWallCollision(player->getPlayerCoordinateX(), player->getPlayerCoordinateY() + 16))
+        {
+            player->setPlayerPosition(player->getPlayerCoordinateX(), player->getPlayerCoordinateY());
+        }
+        else player->move(0, 0.5);
+    }
 }
 
 void Game::updateBullets()
@@ -258,6 +289,11 @@ void Game::updateBullets()
             || bullets[i]->sprite.getPosition().x > window->getSize().x
             || bullets[i]->sprite.getPosition().y < 0
             || bullets[i]->sprite.getPosition().y > window->getSize().y)
+        {
+            bullets.erase(bullets.begin() + i);
+        }
+        // delete bullet if collision with wall
+        else if (map->updateWallCollision(bullets[i]->sprite.getPosition().x, bullets[i]->sprite.getPosition().y))
         {
             bullets.erase(bullets.begin() + i);
         }
@@ -358,7 +394,6 @@ void Game::updateInput()
         }
     }
 }
-
 
 void Game::updateText()
 {
