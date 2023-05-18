@@ -3,7 +3,7 @@
 #include <map>
 #include <math.h>
 
-
+#include "Menu.h"
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
@@ -26,6 +26,9 @@ private:
 	sf::Vector2f currVelocity;
 
 	sf::Time time;
+
+	// Menu
+	Menu* menu;
 
 	// Fonts
 	sf::Font font;
@@ -61,6 +64,7 @@ private:
 	// Private functions
 	void initVariables();
 	void initWindow();
+	void initMenu();
 	void initTextures();
 	void initEnemies();
 	void initText();

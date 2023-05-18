@@ -13,12 +13,9 @@ void Game::initVariables()
     worldBorder.setOutlineColor(sf::Color::Black);
     worldBorder.setOutlineThickness(1);
 
-
     playerDead = false;
 
     time = sf::seconds(0.1f);
-
-    
 
     // font
     font.loadFromFile("fonts/mainFont.otf");
@@ -29,8 +26,13 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode(1700, 1000), "Bigline Miami");
+    window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
     window->setFramerateLimit(60);
+}
+
+void Game::initMenu()
+{
+    menu = new Menu(*window);
 }
 
 void Game::initTextures()
@@ -130,6 +132,7 @@ Game::Game()
 {
     initWindow();
     initVariables();
+    initMenu();
     initTextures();
     initText();
     initKnife();
@@ -146,6 +149,7 @@ Game::~Game()
     delete enemy;
     delete bulletFirst;
     delete map;
+    delete menu;
     delete window;
 
     // Delete textures
@@ -187,19 +191,22 @@ void Game::update()
 {
     updatePollEvents();
 
-    if (!playerDead)
+    if (!menu->getGameStart())
     {
-        updateInput();
-
-        mousePosition = sf::Mouse::getPosition(*window);
-        player->update(mousePosition, *window, view);
-
-        updateBullets();
-
-        updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+        menu->update();
     }
-
-    updateText();
+    else
+    {
+        if (!playerDead)
+        {
+            updateInput();
+            mousePosition = sf::Mouse::getPosition(*window);
+            player->update(mousePosition, *window, view);
+            updateBullets();
+            updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+        }
+        updateText();
+    }
 }
 
 void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
@@ -338,7 +345,7 @@ void Game::updatePollEvents()
     {
         if (event.type == sf::Event::Closed)
             window->close();
-        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape)
+        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape || menu->getGameExit())
             window->close();
         else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::R)
             if (playerDead) restart();
@@ -413,8 +420,6 @@ void Game::updateText()
 }
 
 
-
-
 // ------------------------------------ RENDER ------------------------------------ // 
 /**
 *   @ return void
@@ -426,26 +431,33 @@ void Game::render()
 
 	// Draw staff here...
 
-    map->render(*window);
-
-    for (auto* enemy : enemies)
+    if (!menu->getGameStart())
     {
-        enemy->render(*window);
+        menu->render(*window);
     }
-
-    knife->render(*window);
-
-    player->render(*window);
-    
-    for (auto* bullet : bullets)
+    else
     {
-        bullet->render(*window);
+        map->render(*window);
+
+        for (auto* enemy : enemies)
+        {
+            enemy->render(*window);
+        }
+
+        knife->render(*window);
+
+        player->render(*window);
+
+        for (auto* bullet : bullets)
+        {
+            bullet->render(*window);
+        }
+        bulletFirst->render(*window);
+
+        window->draw(ammoText);
+
+        window->draw(restartText);
     }
-    bulletFirst->render(*window);
-    
-    window->draw(ammoText);
-    
-    window->draw(restartText);
 
 	window->display();
 }
