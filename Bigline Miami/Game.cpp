@@ -26,6 +26,7 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
+    // ::getFullscreenModes()[0] sf::Style::Fullscreen
     window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
     window->setFramerateLimit(60);
 }
@@ -204,6 +205,7 @@ void Game::update()
             player->update(mousePosition, *window, view);
             updateBullets();
             updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+            // updateEnemiesView();
         }
         updateText();
     }
@@ -248,9 +250,7 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
         player->setWithKnife(false);
     }
 
-
-
-    // check map collision
+    // check player and map collision
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         if (map->updateWallCollision(player->getPlayerCoordinateX(), player->getPlayerCoordinateY() - 16))
         {
@@ -419,6 +419,16 @@ void Game::updateText()
     }
 }
 
+void Game::updateEnemiesView()
+{
+    for (short i = 0; i < enemies.size(); i++)
+    {
+        if (map->updateWallCollision(enemies[i]->getViewBounds()))
+        {
+            std::cout << "Coll with wall";
+        }
+    }
+}
 
 // ------------------------------------ RENDER ------------------------------------ // 
 /**

@@ -20,9 +20,6 @@ void Menu::initVariables(sf::RenderTarget& target)
 	scrollbar.push_back(new sf::RectangleShape);
 	scrollbar.push_back(new sf::RectangleShape);
 	isDragging = false;
-
-
-
 }
 
 void Menu::initBtns()
@@ -59,6 +56,15 @@ void Menu::openInfo(sf::RenderTarget& target)
 	scrollbar[1]->setSize(sf::Vector2f(25, infoBg->getSize().y / 6));
 	scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, scrollbar[0]->getPosition().y);
 	scrollbar[1]->setFillColor(sf::Color(139, 30, 30));
+	
+	// BACK btn
+	btns.push_back(new sf::RectangleShape);
+	btns[3]->setSize(sf::Vector2f(300, 100));
+	btns[3]->setPosition(200, 150);
+	btns[3]->setOutlineColor(sf::Color::Black);
+	btns[3]->setOutlineThickness(5);
+	btns[3]->setTexture(btnsTexture);
+	btns[3]->setTextureRect(sf::IntRect(0, 318, 320, 106));
 }
 
 void Menu::initColors()
@@ -156,16 +162,25 @@ void Menu::updateEvents(sf::RenderTarget& target)
 		{
 			mousePos = sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 			newY = mousePos.y - scrollbar[1]->getSize().y / 2.f;
+
+			if (newY < scrollbar[0]->getPosition().y)
+			{
+				newY = scrollbar[0]->getPosition().y;
+			}
+			else if (newY + scrollbar[1]->getSize().y > scrollbar[0]->getPosition().y + scrollbar[0]->getSize().y)
+			{
+				newY = scrollbar[0]->getPosition().y + scrollbar[0]->getSize().y - scrollbar[1]->getSize().y;
+			}
+			
 			scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, newY);
 			infoBg->setPosition(infoBg->getPosition().x, -newY / 4);
+		}
 
-			if (scrollbar[1]->getPosition().y < scrollbar[0]->getPosition().y - 10)
-			{
-				scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, scrollbar[0]->getPosition().y + scrollbar[1]->getPosition().y);
-			}
-
-			
-
+		// INFO btn
+		if (btns[3]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			gameInfo = false;
 		}
 	}
 
@@ -179,18 +194,20 @@ void Menu::update(sf::RenderTarget& target)
 void Menu::render(sf::RenderTarget& target)
 {
 	target.draw(*mainMenuBg);
-
-	for (short i = 0; i < btns.size(); i++)
+	if (!gameInfo)
 	{
-		target.draw(*btns[i]);
+		for (short i = 0; i < 3; i++)
+		{
+			target.draw(*btns[i]);
+		}
 	}
-
-	if (gameInfo)
+	else
 	{
 		target.draw(*infoBg);
 		for (short i = 0; i < scrollbar.size(); i++)
 		{
 			target.draw(*scrollbar[i]);
 		}
+		target.draw(*btns[3]);
 	}
 }
