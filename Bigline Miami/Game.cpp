@@ -193,7 +193,7 @@ void Game::update()
 
     if (!menu->getGameStart())
     {
-        menu->update();
+        menu->update(*window);
     }
     else
     {

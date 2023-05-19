@@ -9,6 +9,78 @@ int main()
 }
 
 
+
+//#include <SFML/Graphics.hpp>
+//
+//int main()
+//{
+//    sf::RenderWindow window(sf::VideoMode(800, 600), "Scrollbar Example");
+//
+//    sf::RectangleShape scrollbar(sf::Vector2f(20.f, 400.f));
+//    scrollbar.setPosition(780.f, 100.f);
+//    scrollbar.setFillColor(sf::Color::White);
+//
+//    sf::RectangleShape slider(sf::Vector2f(20.f, 80.f));
+//    slider.setPosition(780.f, 100.f);
+//    slider.setFillColor(sf::Color::Blue);
+//
+//    sf::RectangleShape content(sf::Vector2f(760.f, 600.f));
+//    content.setPosition(20.f, 0.f);
+//    content.setFillColor(sf::Color::White);
+//
+//    sf::RectangleShape square(sf::Vector2f(100.f, 100.f));
+//    square.setPosition(50.f, 50.f);
+//    square.setFillColor(sf::Color::Red);
+//
+//    bool isDragging = false;
+//
+//    while (window.isOpen())
+//    {
+//        sf::Event event;
+//        while (window.pollEvent(event))
+//        {
+//            if (event.type == sf::Event::Closed)
+//                window.close();
+//
+//            // Обработка событий мыши
+//            if (event.type == sf::Event::MouseButtonPressed)
+//            {
+//                if (event.mouseButton.button == sf::Mouse::Left)
+//                {
+//                    sf::Vector2f mousePos = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+//                    if (slider.getGlobalBounds().contains(mousePos))
+//                        isDragging = true;
+//                }
+//            }
+//            else if (event.type == sf::Event::MouseButtonReleased)
+//            {
+//                if (event.mouseButton.button == sf::Mouse::Left)
+//                    isDragging = false;
+//            }
+//            else if (event.type == sf::Event::MouseMoved)
+//            {
+//                if (isDragging)
+//                {
+//                    sf::Vector2f mousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+//                    float newY = mousePos.y - slider.getSize().y / 2.f;
+//                    slider.setPosition(slider.getPosition().x, newY);
+//                    content.setPosition(content.getPosition().x, -newY * (content.getSize().y - window.getSize().y) / (scrollbar.getSize().y - slider.getSize().y));
+//                }
+//            }
+//        }
+//
+//        window.clear();
+//        window.draw(scrollbar);
+//        window.draw(slider);
+//        window.draw(content);
+//        window.draw(square);
+//        window.display();
+//    }
+//
+//    return 0;
+//}
+
+
 //#include "Game.h"
 //
 //const short columns = 6;

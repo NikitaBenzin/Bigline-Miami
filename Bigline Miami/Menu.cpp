@@ -4,6 +4,7 @@ void Menu::initVariables(sf::RenderTarget& target)
 {
 	gameStart = false;
 	gameExit = false;
+	gameInfo = false;
 
 	// Background
 	bgTexture.loadFromFile("textures/mainMenuBg.png");
@@ -11,6 +12,17 @@ void Menu::initVariables(sf::RenderTarget& target)
 	btnsTexture->loadFromFile("textures/mainMenuBtns.png");
 	mainMenuBg = new sf::Sprite;
 	mainMenuBg->setTexture(bgTexture);
+
+	// Info bg
+	infoBg = new sf::RectangleShape;
+	infoBgTexture = new sf::Texture;
+	infoBgTexture->loadFromFile("textures/infoBg.png");
+	scrollbar.push_back(new sf::RectangleShape);
+	scrollbar.push_back(new sf::RectangleShape);
+	isDragging = false;
+
+
+
 }
 
 void Menu::initBtns()
@@ -25,6 +37,28 @@ void Menu::initBtns()
 		btns[i]->setTexture(btnsTexture);
 		btns[i]->setTextureRect(sf::IntRect(0, i * 106, 320, 106));
 	}
+}
+
+void Menu::openInfo(sf::RenderTarget& target)
+{
+	// info BG 
+	infoBg->setSize(sf::Vector2f(720, 1280));
+	infoBg->setOrigin(infoBg->getSize().x / 2, 0);
+	infoBg->setPosition(target.getSize().x / 2, 10);
+	infoBg->setFillColor(sf::Color(150, 150, 150));
+	infoBg->setOutlineColor(sf::Color::Black);
+	infoBg->setOutlineThickness(1);
+	infoBg->setTexture(infoBgTexture);
+
+	// info scrollbar
+	// scrollbar bg
+	scrollbar[0]->setSize(sf::Vector2f(25, target.getSize().y - 20));
+	scrollbar[0]->setPosition(infoBg->getPosition().x + infoBg->getSize().x/2 + 5, 10);
+	scrollbar[0]->setFillColor(sf::Color(150, 150, 150));
+	// scrollbar slider
+	scrollbar[1]->setSize(sf::Vector2f(25, infoBg->getSize().y / 6));
+	scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, scrollbar[0]->getPosition().y);
+	scrollbar[1]->setFillColor(sf::Color(139, 30, 30));
 }
 
 void Menu::initColors()
@@ -48,12 +82,16 @@ Menu::Menu(sf::RenderTarget& target)
 Menu::~Menu()
 {
 	delete mainMenuBg;
-
+	delete infoBg;
 	for (short i = 0; i < btns.size(); i++)
 	{
 		delete btns[i];
 	}
 
+	for (short i = 0; i < scrollbar.size(); i++)
+	{
+		delete scrollbar[i];
+	}
 }
 
 bool Menu::getGameStart()
@@ -66,7 +104,7 @@ bool Menu::getGameExit()
 	return gameExit;
 }
 
-void Menu::updateEvents()
+void Menu::updateEvents(sf::RenderTarget& target)
 {
 	// HOVER EFFECT
 	for (short i = 0; i < btns.size(); i++)
@@ -84,30 +122,75 @@ void Menu::updateEvents()
 
 	// NEW GAME btn 
 	if (btns[0]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo)
 	{
 		gameStart = true;
 	}
 
 	// EXIT btn 
 	if (btns[2]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo)
 	{
 		gameExit = true;
 	}
+
+	// INFO btn
+	if (btns[1]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		openInfo(target);
+		gameInfo = true;
+	}
+
+	if (gameInfo)
+	{
+		if (scrollbar[1]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition())))
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) isDragging = true;
+		}
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			isDragging = false;
+		}
+		if (isDragging)
+		{
+			mousePos = sf::Vector2f(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+			newY = mousePos.y - scrollbar[1]->getSize().y / 2.f;
+			scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, newY);
+			infoBg->setPosition(infoBg->getPosition().x, -newY / 4);
+
+			if (scrollbar[1]->getPosition().y < scrollbar[0]->getPosition().y - 10)
+			{
+				scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, scrollbar[0]->getPosition().y + scrollbar[1]->getPosition().y);
+			}
+
+			
+
+		}
+	}
+
 }
 
-void Menu::update()
+void Menu::update(sf::RenderTarget& target)
 {
-	updateEvents();
+	updateEvents(target);
 }
 
 void Menu::render(sf::RenderTarget& target)
 {
 	target.draw(*mainMenuBg);
-	
+
 	for (short i = 0; i < btns.size(); i++)
 	{
 		target.draw(*btns[i]);
+	}
+
+	if (gameInfo)
+	{
+		target.draw(*infoBg);
+		for (short i = 0; i < scrollbar.size(); i++)
+		{
+			target.draw(*scrollbar[i]);
+		}
 	}
 }
