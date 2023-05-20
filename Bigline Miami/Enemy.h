@@ -30,9 +30,10 @@ private:
 	float deltaTime;
 	float length;
 
-
 	sf::Clock gameTimer;
 	sf::Int32 enemyCknockTime;
+
+	float viewLength;
 
 	// Privat functions
 	void initVariables();
@@ -50,6 +51,8 @@ public:
 	float getEnemyPosY();
 
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
+	void setEnemyView(float view_length);
+	float getEnemyViewLength();
 
 	void enemyWalkAnimaton();
 	void enemyAttackAnimation();

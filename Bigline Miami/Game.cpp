@@ -27,7 +27,7 @@ void Game::initVariables()
 void Game::initWindow()
 {
     // ::getFullscreenModes()[0] sf::Style::Fullscreen
-    window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
+    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
     window->setFramerateLimit(60);
 }
 
@@ -205,7 +205,7 @@ void Game::update()
             player->update(mousePosition, *window, view);
             updateBullets();
             updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
-            // updateEnemiesView();
+            updateEnemiesView();
         }
         updateText();
     }
@@ -419,13 +419,14 @@ void Game::updateText()
     }
 }
 
+
 void Game::updateEnemiesView()
 {
     for (short i = 0; i < enemies.size(); i++)
     {
         if (map->updateWallCollision(enemies[i]->getViewBounds()))
         {
-            std::cout << "Coll with wall";
+            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() - 10);
         }
     }
 }

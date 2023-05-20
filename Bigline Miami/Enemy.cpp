@@ -39,10 +39,11 @@ void Enemy::initSprite(float pos_x, float pos_y)
 void Enemy::initTriangle()
 {
     // enemy view
+    viewLength = 350;
     triangle.setPointCount(3);
     triangle.setPoint(0, sf::Vector2f(0, 0));
-    triangle.setPoint(1, sf::Vector2f(450, -150));
-    triangle.setPoint(2, sf::Vector2f(450, 150));
+    triangle.setPoint(1, sf::Vector2f(viewLength, -150));
+    triangle.setPoint(2, sf::Vector2f(viewLength, 150));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
     triangle.setOutlineColor(sf::Color::Green);
@@ -153,9 +154,20 @@ bool Enemy::getEnemyDead()
     return enemyDead;
 }
 
+void Enemy::setEnemyView(float view_length)
+{
+    triangle.setPoint(1, sf::Vector2f(view_length, -150));
+    triangle.setPoint(2, sf::Vector2f(view_length, 150));
+}
+
 void Enemy::stop()
 {
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
+}
+
+float Enemy::getEnemyViewLength()
+{
+    return viewLength;
 }
 
 
