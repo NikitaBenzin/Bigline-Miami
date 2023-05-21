@@ -26,8 +26,8 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
-    // ::getFullscreenModes()[0] sf::Style::Fullscreen
-    window = new sf::RenderWindow(sf::VideoMode(1280, 720), "Bigline Miami");
+    //  sf::Style::Fullscreen
+    window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
     window->setFramerateLimit(60);
 }
 
