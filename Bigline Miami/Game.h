@@ -95,6 +95,7 @@ public:
 	void updatePollEvents();
 	void updateInput();
 	void updateEnemiesView();
+	void updateEnemiesWallCollision();
 	
 
 	void render();

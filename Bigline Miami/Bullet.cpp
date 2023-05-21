@@ -3,7 +3,6 @@
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
 Bullet::Bullet()
 {
-	
 }
 
 Bullet::Bullet(sf::Texture* texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed, float rotation)
@@ -24,9 +23,14 @@ Bullet::~Bullet()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ //
 
-const sf::FloatRect Bullet::getBounds() const
+const sf::FloatRect Bullet::getBounds() 
 {
-	return sprite.getGlobalBounds();
+	newWidth = sprite.getGlobalBounds().width / 2.0f;
+	newHeight = sprite.getGlobalBounds().height / 2.0f;
+	newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+	newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+	return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
 float Bullet::getMovementSpeed()

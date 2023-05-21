@@ -206,6 +206,7 @@ void Game::update()
             updateBullets();
             updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
             updateEnemiesView();
+            updateEnemiesWallCollision();
         }
         updateText();
     }
@@ -300,7 +301,7 @@ void Game::updateBullets()
             bullets.erase(bullets.begin() + i);
         }
         // delete bullet if collision with wall
-        else if (map->updateWallCollision(bullets[i]->sprite.getPosition().x, bullets[i]->sprite.getPosition().y))
+        else if (map->updateWallCollision(bullets[i]->getBounds()))
         {
             bullets.erase(bullets.begin() + i);
         }
@@ -419,17 +420,54 @@ void Game::updateText()
     }
 }
 
-
 void Game::updateEnemiesView()
 {
     for (short i = 0; i < enemies.size(); i++)
     {
-        if (map->updateWallCollision(enemies[i]->getViewBounds()))
+        if (map->updateWallCollision(enemies[i]->getViewBounds()) 
+            && !enemies[i]->getEnemyDead()
+            && enemies[i]->getEnemyViewWidth() >= 10)
         {
-            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() - 10);
+            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() - 5, enemies[i]->getEnemyViewWidth() - 6.5f);
+        }
+        else if (!map->updateWallCollision(enemies[i]->getViewBounds()) 
+            && !enemies[i]->getEnemyDead()
+            && enemies[i]->getEnemyViewLength() < 450
+            || enemies[i]->getEnemyViewWidth() < 150)
+        {
+            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() + 5, enemies[i]->getEnemyViewWidth() + 6.5f);
         }
     }
 }
+
+
+void Game::updateEnemiesWallCollision()
+{
+    for (short i = 0; i < enemies.size(); i++)
+    {
+        if (map->updateWallCollision(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY()))
+        {
+
+            if (map->updateCollisionDiraction(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY(), enemies[i]->getBounds()) == 1)
+            {
+                enemies[i]->setPosition(enemies[i]->getEnemyPosX() - 5, enemies[i]->getEnemyPosY());
+            }
+            else if (map->updateCollisionDiraction(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY(), enemies[i]->getBounds()) == 2)
+            {
+                enemies[i]->setPosition(enemies[i]->getEnemyPosX() + 5, enemies[i]->getEnemyPosY());
+            }
+            else if (map->updateCollisionDiraction(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY(), enemies[i]->getBounds()) == 3)
+            {
+                enemies[i]->setPosition(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY() + 5);
+            }
+            else if (map->updateCollisionDiraction(enemies[i]->getEnemyPosX(), enemies[i]->getEnemyPosY(), enemies[i]->getBounds()) == 4)
+            {
+                enemies[i]->setPosition(enemies[i]->getEnemyPosX() - 5, enemies[i]->getEnemyPosY() - 5);
+            }
+        }
+    }
+}
+
 
 // ------------------------------------ RENDER ------------------------------------ // 
 /**

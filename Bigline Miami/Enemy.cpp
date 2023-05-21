@@ -40,14 +40,15 @@ void Enemy::initTriangle()
 {
     // enemy view
     viewLength = 350;
+    viewWidth = 150;
     triangle.setPointCount(3);
     triangle.setPoint(0, sf::Vector2f(0, 0));
-    triangle.setPoint(1, sf::Vector2f(viewLength, -150));
-    triangle.setPoint(2, sf::Vector2f(viewLength, 150));
+    triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
+    triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
-    triangle.setOutlineColor(sf::Color::Green);
-    triangle.setOutlineThickness(1);
+    //triangle.setOutlineColor(sf::Color::Green);
+    //triangle.setOutlineThickness(1);
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 }
 
@@ -131,17 +132,22 @@ void Enemy::enemyAttackAnimation()
 
 sf::FloatRect Enemy::getBounds()
 {
-    float newWidth = sprite.getGlobalBounds().width / 2.0f;
-    float newHeight = sprite.getGlobalBounds().height / 2.0f;
-    float newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
-    float newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+    newWidth = sprite.getGlobalBounds().width / 2.0f;
+    newHeight = sprite.getGlobalBounds().height / 2.0f;
+    newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
 
     return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
 sf::FloatRect Enemy::getViewBounds()
 {
-    return triangle.getGlobalBounds();
+    newWidth = triangle.getGlobalBounds().width / 2.0f;
+    newHeight = triangle.getGlobalBounds().height / 2.0f;
+    newX = triangle.getGlobalBounds().left + triangle.getGlobalBounds().width / 2.0f;
+    newY = triangle.getGlobalBounds().top + triangle.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
 void Enemy::setDead(bool dead)
@@ -154,10 +160,12 @@ bool Enemy::getEnemyDead()
     return enemyDead;
 }
 
-void Enemy::setEnemyView(float view_length)
+void Enemy::setEnemyView(float view_length, float view_width)
 {
-    triangle.setPoint(1, sf::Vector2f(view_length, -150));
-    triangle.setPoint(2, sf::Vector2f(view_length, 150));
+    viewLength = view_length;
+    viewWidth = view_width;
+    triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
+    triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
 }
 
 void Enemy::stop()
@@ -165,12 +173,20 @@ void Enemy::stop()
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
 }
 
+void Enemy::setPosition(float pos_x, float pos_y)
+{
+    sprite.setPosition(sf::Vector2f(pos_x, pos_y));
+}
+
 float Enemy::getEnemyViewLength()
 {
     return viewLength;
 }
 
-
+float Enemy::getEnemyViewWidth()
+{
+    return viewWidth;
+}
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
 

@@ -30,10 +30,16 @@ private:
 	float deltaTime;
 	float length;
 
+	float newWidth;
+	float newHeight;
+	float newX;
+	float newY;
+
 	sf::Clock gameTimer;
 	sf::Int32 enemyCknockTime;
 
 	float viewLength;
+	float viewWidth;
 
 	// Privat functions
 	void initVariables();
@@ -51,8 +57,9 @@ public:
 	float getEnemyPosY();
 
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
-	void setEnemyView(float view_length);
+	void setEnemyView(float view_length, float view_width);
 	float getEnemyViewLength();
+	float getEnemyViewWidth();
 
 	void enemyWalkAnimaton();
 	void enemyAttackAnimation();
@@ -64,6 +71,7 @@ public:
 	bool getEnemyDead();
 
 	void stop();
+	void setPosition(float pos_x, float pos_y);
 
 	const bool timer();
 
