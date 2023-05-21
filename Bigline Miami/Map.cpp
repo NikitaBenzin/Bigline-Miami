@@ -186,12 +186,12 @@ void Map::initWalls()
 	{
 		mapRectangles[i] = new sf::RectangleShape;
 	}
-	mapRectangles[0]->setSize(sf::Vector2f(30, 400));
-	mapRectangles[0]->setPosition(400, 250);
+	mapRectangles[0]->setSize(sf::Vector2f(40, 400));
+	mapRectangles[0]->setPosition(800, 250);
 	mapRectangles[0]->setFillColor(sf::Color::Black);
 
-	mapRectangles[1]->setSize(sf::Vector2f(100, 100));
-	mapRectangles[1]->setPosition(100, 250);
+	mapRectangles[1]->setSize(sf::Vector2f(200, 40));
+	mapRectangles[1]->setPosition(400, 250);
 	mapRectangles[1]->setFillColor(sf::Color::Black);
 }
 
@@ -241,6 +241,40 @@ bool Map::updateWallCollision(float pos_x, float pos_y)
 		}
 	}
 	return false;
+}
+
+short Map::updateCollisionDiraction(float pos_x, float pos_y, sf::FloatRect bounds)
+{
+	for (int i = 0; i < mapItems; i++)
+	{
+		if (bounds.intersects(mapRectangles[i]->getGlobalBounds()))
+		{
+
+
+			if (pos_x > mapRectangles[i]->getPosition().x)
+			{
+				// Left
+				if (pos_x + 6 > mapRectangles[i]->getPosition().x + mapRectangles[i]->getSize().x)
+				{
+					return 2;
+				}
+				// bottom
+				else if (pos_y > mapRectangles[i]->getPosition().y)
+				{
+					// top
+					if (pos_y + 6 < mapRectangles[i]->getPosition().y + mapRectangles[i]->getSize().y)
+					{
+						return 4;
+					}
+					else return 3;
+				}
+				else return 1;
+			}
+
+		}
+	}
+
+	return 0;
 }
 
 void Map::update(sf::FloatRect player_bounds)

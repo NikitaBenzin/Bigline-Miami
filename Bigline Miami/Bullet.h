@@ -13,6 +13,10 @@ private:
 
 	sf::Vector2f direction;
 	float movementSpeed;
+	float newWidth;
+	float newHeight;
+	float newX;
+	float newY;
 
 	//// Privat functions
 	//void initVariables();
@@ -27,7 +31,7 @@ public:
 	~Bullet();
 	sf::Sprite sprite;
 	// Accessor
-	const sf::FloatRect getBounds() const;
+	const sf::FloatRect getBounds() ;
 
 	float getMovementSpeed();
 

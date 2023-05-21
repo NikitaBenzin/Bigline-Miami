@@ -56,6 +56,7 @@ public:
 
 	bool updateWallCollision(sf::FloatRect bounds);
 	bool updateWallCollision(float pos_x, float pos_y);
+	short updateCollisionDiraction(float pos_x, float pos_y, sf::FloatRect bounds);
 	void update(sf::FloatRect player_bounds);
 	void render(sf::RenderTarget& target);
 
