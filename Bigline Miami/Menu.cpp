@@ -1,6 +1,6 @@
 #include "Menu.h"
 
-void Menu::initVariables(sf::RenderTarget& target)
+void Menu::initVariables()
 {
 	gameStart = false;
 	gameExit = false;
@@ -75,12 +75,7 @@ void Menu::initColors()
 
 Menu::Menu()
 {
-
-}
-
-Menu::Menu(sf::RenderTarget& target)
-{
-	initVariables(target);
+	initVariables();
 	initBtns();
 	initColors();
 }

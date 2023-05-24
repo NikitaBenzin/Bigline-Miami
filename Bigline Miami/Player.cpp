@@ -63,12 +63,12 @@ void Player::initSprite(sf::RenderTarget& window)
 	sprite.setTexture(texture);
 
 	// Resize the sprite
-	sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // start frame
-	sprite.scale(2, 2);
-	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-	sprite.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
+	sprite.setTextureRect(sf::IntRect(32, 0, 32, 32)); // start frame
+	sprite.setOrigin(16, 16);
+	sprite.setScale(2, 2);
+	sprite.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
 
-	playerBorder.setPosition(sf::Vector2f(window.getSize().x / 2 - 32, window.getSize().y / 2 - 32));
+	playerBorder.setPosition(sf::Vector2f(window.getSize().x / 2 - 64, window.getSize().y / 2 - 64));
 }
 
 void Player::initWeapon()
@@ -97,6 +97,7 @@ Player::~Player()
 void Player::move(const float dirX, const float dirY)
 {
 	sprite.move(movementSpeed * dirX, movementSpeed * dirY );
+	legs.move(movementSpeed * dirX, movementSpeed * dirY);
 }
 
 unsigned short Player::getGunAmmo()
@@ -178,7 +179,7 @@ void Player::attackAnimation()
 	elapsedTime += deltaTimeSeconds * 4;
 	if (elapsedTime >= 0.07f) {
 		currentFrame++;
-		if (currentFrame > 8) {
+		if (currentFrame > 13) {
 			currentFrame = 0;
 		}
 		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); 
@@ -241,11 +242,11 @@ sf::FloatRect Player::getPlayerGlobalBounds()
 // Walk Animation
 void Player::walkAnimation()
 {
-	sf::Time deltaTime = clock.restart(); // getting elapsed time
-	float deltaTimeSeconds = deltaTime.asSeconds(); // conversion to seconds
+	deltaTime = clock.restart(); // getting elapsed time
+	deltaTimeSeconds = deltaTime.asSeconds(); // conversion to seconds
 
 	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.1f) { // time between sprites
+	if (elapsedTime >= 0.3f) { // time between sprites
 		currentFrame++;
 		if (currentFrame > 14) { // number of sprites - 1 in one cycle
 			currentFrame = 0;
@@ -254,6 +255,7 @@ void Player::walkAnimation()
 		elapsedTime = 0.0f;
 	}
 }
+
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
@@ -328,7 +330,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 
 	}
 	else if (!withWeapon && !withKnife){
-		sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // set sprite to the start
+		sprite.setTextureRect(sf::IntRect(0, 32, 32, 32));// set sprite to the start
 	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !withWeapon && !withKnife) {
@@ -371,11 +373,12 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 */
 void Player::updatePlayerRotation(sf::Vector2i mousePosition)
 {
-	sf::Vector2f spritePosition = sprite.getPosition();
+	spritePosition = sprite.getPosition();
 	dx = mousePosition.x - spritePosition.x;
 	dy = mousePosition.y - spritePosition.y;
 	rotation = std::atan2(dy, dx) * 180 / 3.14159265;
 	sprite.setRotation(rotation);
+	legs.setRotation(rotation);
 }
 
 void Player::updateMousePos(sf::Vector2i mousePosition)
@@ -402,5 +405,6 @@ void Player::render(sf::RenderTarget& target)
 	target.draw(playerBorder);
 	gun->render(target);
 	target.draw(gunBorder);
+	target.draw(legs);
 	target.draw(sprite);
 }

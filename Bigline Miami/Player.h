@@ -6,6 +6,7 @@ class Player
 {
 private:
 	sf::Sprite sprite;
+	sf::Sprite legs;
 	sf::Texture texture;
 	sf::Clock clock;
 
@@ -26,6 +27,7 @@ private:
 	float attackCooldownMax;
 
 	// Player rotation
+	sf::Vector2f spritePosition;
 	float rotation;
 	float dx;
 	float dy;
@@ -40,8 +42,9 @@ private:
 	
 	int currentFrame = 0; // current frame index 
 	float elapsedTime = 0.0f; // elipsed time
+	sf::Time deltaTime;
+	float deltaTimeSeconds;
 
-	
 	sf::Vector2f playerCenter;
 	sf::Vector2f mousePosWindow;
 	sf::Vector2f aimDir;

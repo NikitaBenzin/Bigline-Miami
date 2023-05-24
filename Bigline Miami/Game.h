@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Knife.h"
 #include "Map.h"
+#include "Pause.h"
 
 class Game
 {
@@ -53,6 +54,8 @@ private:
 	// MAP
 	Map* map;
 
+	// Pause
+	Pause* pause;
 
 	sf::View view;
 	sf::Vector2i mousePosition;

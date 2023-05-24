@@ -33,7 +33,8 @@ void Game::initWindow()
 
 void Game::initMenu()
 {
-    menu = new Menu(*window);
+    menu = new Menu;
+    pause = new Pause;
 }
 
 void Game::initTextures()
@@ -151,6 +152,7 @@ Game::~Game()
     delete bulletFirst;
     delete map;
     delete menu;
+    delete pause;
     delete window;
 
     // Delete textures
@@ -198,7 +200,7 @@ void Game::update()
     }
     else
     {
-        if (!playerDead)
+        if (!playerDead && !pause->getPause())
         {
             updateInput();
             mousePosition = sf::Mouse::getPosition(*window);
@@ -209,6 +211,7 @@ void Game::update()
             updateEnemiesWallCollision();
         }
         updateText();
+        pause->update();
     }
 }
 
@@ -346,10 +349,17 @@ void Game::updatePollEvents()
     {
         if (event.type == sf::Event::Closed)
             window->close();
-        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape || menu->getGameExit())
+        // event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape || 
+        else if (menu->getGameExit() || pause->getQuit())
             window->close();
-        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::R)
+        else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::R) {
             if (playerDead) restart();
+        }
+        else if (menu->getGameStart() && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape)
+        {
+            if (!pause->getPause() && player->timer(time) && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape) pause->setPause(true);
+            else if (player->timer(time) && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape) pause->setPause(false);
+        }
     }
 }
 
@@ -424,19 +434,34 @@ void Game::updateEnemiesView()
 {
     for (short i = 0; i < enemies.size(); i++)
     {
-        if (map->updateWallCollision(enemies[i]->getViewBounds()) 
+
+        if (map->updateWallCollision(enemies[i]->getViewBounds())
             && !enemies[i]->getEnemyDead()
-            && enemies[i]->getEnemyViewWidth() >= 10)
+            && enemies[i]->getEnemyViewLength() > 20
+            && enemies[i]->getEnemyViewLength() < 440)
         {
-            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() - 5, enemies[i]->getEnemyViewWidth() - 6.5f);
+            enemies[i]->setEnemyViewLength(enemies[i]->getEnemyViewLength() - 10, enemies[i]->getEnemyViewWidth() - 5);
+            if (!map->updateWallCollision(enemies[i]->getViewRectBounds()) 
+                && enemies[i]->getEnemyViewLengthTriangle() < 440)
+                enemies[i]->setEnemyView(enemies[i]->getEnemyViewLengthTriangle() + 10);
+            enemies[i]->setRectangleViewSize(enemies[i]->getRectangleViewSize() + 10);
         }
-        else if (!map->updateWallCollision(enemies[i]->getViewBounds()) 
+        else if (!map->updateWallCollision(enemies[i]->getViewBounds())
             && !enemies[i]->getEnemyDead()
-            && enemies[i]->getEnemyViewLength() < 450
-            || enemies[i]->getEnemyViewWidth() < 150)
+            && enemies[i]->getEnemyViewLength() <= 420)
         {
-            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLength() + 5, enemies[i]->getEnemyViewWidth() + 6.5f);
+            enemies[i]->setEnemyViewLength(enemies[i]->getEnemyViewLength() + 10, enemies[i]->getEnemyViewWidth() + 5);
+            if (map->updateWallCollision(enemies[i]->getViewRectBounds()))
+                enemies[i]->setEnemyView(enemies[i]->getEnemyViewLengthTriangle() - 10);
+
+            enemies[i]->setRectangleViewSize(enemies[i]->getRectangleViewSize() - 10);
         }
+
+        if (map->updateWallCollision(enemies[i]->getViewRectBounds()) && enemies[i]->getEnemyViewLength() >= 30)
+        {
+            enemies[i]->setEnemyView(enemies[i]->getEnemyViewLengthTriangle() - 20);
+        }
+
     }
 }
 
@@ -486,26 +511,30 @@ void Game::render()
     }
     else
     {
-        map->render(*window);
-
-        for (auto* enemy : enemies)
+        if (!pause->getPause())
         {
-            enemy->render(*window);
+            map->render(*window);
+
+            for (auto* enemy : enemies)
+            {
+                enemy->render(*window);
+            }
+
+            knife->render(*window);
+
+            player->render(*window);
+
+            for (auto* bullet : bullets)
+            {
+                bullet->render(*window);
+            }
+            bulletFirst->render(*window);
+
+            window->draw(ammoText);
+
+            window->draw(restartText);
         }
-
-        knife->render(*window);
-
-        player->render(*window);
-
-        for (auto* bullet : bullets)
-        {
-            bullet->render(*window);
-        }
-        bulletFirst->render(*window);
-
-        window->draw(ammoText);
-
-        window->draw(restartText);
+        else pause->render(*window);
     }
 
 	window->display();

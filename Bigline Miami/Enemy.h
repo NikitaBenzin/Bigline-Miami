@@ -11,6 +11,8 @@ private:
 	sf::Clock clock;
 	// Create triangle which will be enemy view
 	sf::ConvexShape triangle;
+	sf::RectangleShape longView;
+	sf::RectangleShape rectangleView;
 
 	// Enemy rotation
 	float rotation;
@@ -38,6 +40,8 @@ private:
 	sf::Clock gameTimer;
 	sf::Int32 enemyCknockTime;
 
+	float viewLengthTriangle;
+	float viewWidthTriangle;
 	float viewLength;
 	float viewWidth;
 
@@ -57,9 +61,18 @@ public:
 	float getEnemyPosY();
 
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
-	void setEnemyView(float view_length, float view_width);
+	void setEnemyView(float view_length);
+	void setEnemyViewLength(float view_length, float view_width);
+	void setRectangleViewSize(float size);
 	float getEnemyViewLength();
 	float getEnemyViewWidth();
+	float getRectangleViewSize();
+
+	sf::FloatRect getViewRectangleBounds();
+	sf::FloatRect getViewRectBounds();
+
+	float getEnemyViewLengthTriangle();
+	float getEnemyViewWidthTriangle();
 
 	void enemyWalkAnimaton();
 	void enemyAttackAnimation();

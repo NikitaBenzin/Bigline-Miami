@@ -3,9 +3,6 @@
 
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
-
-
-
 void Enemy::initVariables()
 {
     movementSpeed = 3.f;
@@ -39,17 +36,35 @@ void Enemy::initSprite(float pos_x, float pos_y)
 void Enemy::initTriangle()
 {
     // enemy view
-    viewLength = 350;
-    viewWidth = 150;
+    viewLength = 250;
+    viewWidth = 220;
+    viewLengthTriangle = 250;
+    viewWidthTriangle = 220;
     triangle.setPointCount(3);
     triangle.setPoint(0, sf::Vector2f(0, 0));
-    triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
-    triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
+    triangle.setPoint(1, sf::Vector2f(viewLengthTriangle, -viewWidthTriangle));
+    triangle.setPoint(2, sf::Vector2f(viewLengthTriangle, viewWidthTriangle));
     triangle.setOrigin(triangle.getPoint(0));
     triangle.setFillColor(sf::Color::Transparent);
     //triangle.setOutlineColor(sf::Color::Green);
     //triangle.setOutlineThickness(1);
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
+
+    longView.setSize(sf::Vector2f(20, viewLengthTriangle));
+    longView.setOrigin(10, 0);
+    longView.setFillColor(sf::Color::Transparent);
+    //longView.setOutlineColor(sf::Color::Red);
+    //longView.setOutlineThickness(1);
+    longView.setPosition(sprite.getPosition().x, sprite.getPosition().y);
+    longView.setRotation(-90);
+
+    rectangleView.setSize(sf::Vector2f(100, 100));
+    rectangleView.setOrigin(rectangleView.getSize().x, rectangleView.getSize().y / 2);
+    rectangleView.setFillColor(sf::Color::Transparent);
+    //rectangleView.setOutlineColor(sf::Color::Black);
+    //rectangleView.setOutlineThickness(2);
+    rectangleView.setPosition(sprite.getPosition().x + 32, sprite.getPosition().y);
+    
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -57,7 +72,6 @@ void Enemy::initTriangle()
 Enemy::Enemy()
 {
 }
-
 
 Enemy::Enemy(float pos_x, float pos_y, bool is_dead)
 {
@@ -68,13 +82,11 @@ Enemy::Enemy(float pos_x, float pos_y, bool is_dead)
     initTriangle();
 }
 
-
 Enemy::~Enemy()
 {
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
-
 
 float Enemy::getEnemyPosX()
 {
@@ -94,8 +106,6 @@ void Enemy::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
     }
 }
 
-
-
 void Enemy::enemyWalkAnimaton()
 {
     deltaTimeForAnim = clock.restart();
@@ -111,8 +121,6 @@ void Enemy::enemyWalkAnimaton()
         elapsedTime = 0.0f;
     }
 }
-
-
 
 void Enemy::enemyAttackAnimation()
 {
@@ -160,12 +168,24 @@ bool Enemy::getEnemyDead()
     return enemyDead;
 }
 
-void Enemy::setEnemyView(float view_length, float view_width)
+void Enemy::setEnemyView(float view_length)
+{
+    viewLengthTriangle = view_length;
+    longView.setSize(sf::Vector2f(longView.getSize().x, viewLengthTriangle));
+}
+
+void Enemy::setEnemyViewLength(float view_length, float view_width)
 {
     viewLength = view_length;
     viewWidth = view_width;
     triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
     triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
+}
+
+void Enemy::setRectangleViewSize(float size)
+{
+    rectangleView.setOrigin(rectangleView.getSize().x, rectangleView.getSize().y / 2);
+    rectangleView.setSize(sf::Vector2f(size, size));
 }
 
 void Enemy::stop()
@@ -187,15 +207,53 @@ float Enemy::getEnemyViewWidth()
 {
     return viewWidth;
 }
+
+float Enemy::getEnemyViewLengthTriangle()
+{
+    return viewLengthTriangle;
+}
+
+float Enemy::getEnemyViewWidthTriangle()
+{
+    return viewWidthTriangle;
+}
+
+float Enemy::getRectangleViewSize()
+{
+    return rectangleView.getSize().x;
+}
+
+sf::FloatRect Enemy::getViewRectBounds()
+{
+    newWidth = longView.getGlobalBounds().width / 2.0f;
+    newHeight = longView.getGlobalBounds().height / 2.0f;
+    newX = longView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = longView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
+sf::FloatRect Enemy::getViewRectangleBounds()
+{
+    newWidth = rectangleView.getGlobalBounds().width / 2.0f;
+    newHeight = rectangleView.getGlobalBounds().height / 2.0f;
+    newX = rectangleView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = rectangleView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
-
-
 
 bool Enemy::updateEnemyView(sf::FloatRect bounds)
 {
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
+    longView.setPosition(sprite.getPosition().x, sprite.getPosition().y);
+    rectangleView.setPosition(sprite.getPosition().x, sprite.getPosition().y);
     // check triangle bounds with player
-    if (triangle.getGlobalBounds().intersects(bounds))
+    if (triangle.getGlobalBounds().intersects(bounds) 
+        || longView.getGlobalBounds().intersects(bounds) 
+        || rectangleView.getGlobalBounds().intersects(bounds))
     {
         //std::cout << "Collision detected!" << std::endl;
         return true;
@@ -246,8 +304,6 @@ bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
     return false;
 }
 
-
-
 void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 {
     sf::Vector2f spritePosition = sprite.getPosition();
@@ -256,9 +312,9 @@ void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
     rotation = std::atan2(dy, dx) * 180 / 3.14159265;
     sprite.setRotation(rotation);
     triangle.setRotation(rotation);
+    longView.setRotation(rotation - 90);
+    rectangleView.setRotation(rotation);
 }
-
-
 
 void Enemy::Cknocked(bool state)
 {
@@ -296,6 +352,8 @@ const bool Enemy::timer()
 void Enemy::render(sf::RenderTarget& target)
 {
     target.draw(triangle);
+    target.draw(longView);
+    target.draw(rectangleView);
     target.draw(sprite);
 }
 

@@ -15,7 +15,7 @@ private:
 	std::vector<sf::RectangleShape*> btns;
 	sf::Color hoverColor;
 
-	void initVariables(sf::RenderTarget& target);
+	void initVariables();
 	void initColors();
 	void initBtns();
 
@@ -31,7 +31,6 @@ private:
 
 public:
 	Menu();
-	Menu(sf::RenderTarget& target);
 	~Menu();
 
 	bool getGameStart();
