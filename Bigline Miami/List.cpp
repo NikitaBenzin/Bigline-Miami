@@ -2,6 +2,11 @@
 
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
+
+/**
+*   List class constructor
+*   - initializes all variables
+*/
 template<typename T>
 List<T>::List()
 {
@@ -10,7 +15,10 @@ List<T>::List()
     this->current = this->first;
 }
 
-
+/**
+*   List class destructor
+*   - delete all variables and clear memory
+*/
 template<typename T>
 List<T>::~List()
 {
@@ -35,10 +43,9 @@ bool List<T>::empty(void)
     if (first == nullptr) return true; else return false;
 }
 
-
 /**
 *   @ return void
-*   - push back in List element which was given
+*   - adds in back of array given value
 */
 template<typename T>
 void List<T>::push_back(T value)
@@ -59,14 +66,19 @@ void List<T>::push_back(T value)
     }
 }
 
-
+/**
+*   @ return unsigned int 
+*   - size of array
+*/
 template<typename T>
 unsigned int List<T>::size(void)
 {
     return this->Size;
 }
 
-
+/**
+*   @ return Item at index
+*/
 template<typename T>
 T& List<T>::operator[](const int index)
 {
@@ -87,6 +99,10 @@ T& List<T>::operator[](const int index)
     }
 }
 
+/**
+*   @ return void
+*   - delete first element in array
+*/
 template<typename T>
 void List<T>::pop_front(void)
 {
@@ -96,6 +112,10 @@ void List<T>::pop_front(void)
     --Size;
 }
 
+/**
+*   @ return void
+*   - clears the array
+*/
 template<typename T>
 void List<T>::clear(void)
 {
@@ -105,12 +125,19 @@ void List<T>::clear(void)
     }
 }
 
+/**
+*   @ return pointer on the first element in array
+*/
 template<typename T>
 Item<T>* List<T>::begin()
 {
     return first;
 }
 
+/**
+*   @ return void
+*   - add velue in front of array
+*/
 template<typename T>
 void List<T>::push_front(T value)
 {
@@ -121,7 +148,10 @@ void List<T>::push_front(T value)
     ++Size;
 }
 
-
+/**
+*   @ return void
+*   - erases the element at index
+*/
 template<typename T>
 void List<T>::erase(int index)
 {
@@ -145,5 +175,4 @@ void List<T>::erase(int index)
         delete whichDelete;
         --Size;
     }
-
 }

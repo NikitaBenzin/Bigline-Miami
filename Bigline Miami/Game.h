@@ -38,31 +38,26 @@ private:
 	sf::Color mainColor;
 	sf::Color mainOutlineColor;
 
-
 	// Player
 	Player* player;
 	bool playerDead;
 
-	// Enemy
+	// Enemies
 	Enemy* enemy;
 	std::vector<Enemy*> enemies;
 
-
-	// knife
+	// Knife
 	Knife* knife;
 
-	// MAP
+	// Map
 	Map* map;
 
 	// Pause
 	Pause* pause;
 
+	// View (i wanted to do screen zoom but mouse positioning is broke every time i change screen view) 
 	sf::View view;
 	sf::Vector2i mousePosition;
-
-	float xForBullet;
-	float yForBullet;
-
 
 	// Private functions
 	void initVariables();
@@ -87,19 +82,16 @@ public:
 
 	// Public functions
 	void run();
-	
-	
 
 	void updateText();
 	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
-	void update();
 	void updateBullets();
 	void updateEnemies();
 	void updatePollEvents();
 	void updateInput();
 	void updateEnemiesView();
 	void updateEnemiesWallCollision();
-	
+	void update();
 
 	void render();
 };

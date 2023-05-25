@@ -2,7 +2,6 @@
 
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
-
 void Player::initVariables()
 {
 	// Set movement speed and bool is running
@@ -34,18 +33,6 @@ void Player::initVariables()
 	gunBorder.setFillColor(sf::Color::Transparent);
 	//gunBorder.setOutlineColor(sf::Color::Red);
 	//gunBorder.setOutlineThickness(1);
-}
-
-bool Player::timer(sf::Time& time)
-{
-	static sf::Clock clock;
-	time = clock.getElapsedTime();
-
-	if (time.asSeconds() >= 0.5f) {
-		clock.restart();
-		return true;
-	}
-	return false;
 }
 
 void Player::initTexture()
@@ -94,11 +81,102 @@ Player::~Player()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
+bool Player::timer(sf::Time& time)
+{
+	static sf::Clock clock;
+	time = clock.getElapsedTime();
+
+	if (time.asSeconds() >= 0.5f) {
+		clock.restart();
+		return true;
+	}
+	return false;
+}
+
 void Player::move(const float dirX, const float dirY)
 {
 	sprite.move(movementSpeed * dirX, movementSpeed * dirY );
 	legs.move(movementSpeed * dirX, movementSpeed * dirY);
 }
+
+void Player::walkAnimation()
+{
+	deltaTime = clock.restart(); // getting elapsed time
+	deltaTimeSeconds = deltaTime.asSeconds(); // conversion to seconds
+
+	elapsedTime += deltaTimeSeconds * 4;
+	if (elapsedTime >= 0.3f) { // time between sprites
+		currentFrame++;
+		if (currentFrame > 14) { // number of sprites - 1 in one cycle
+			currentFrame = 0;
+		}
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // set new texture rect 
+		elapsedTime = 0.0f;
+	}
+}
+
+bool Player::weaponCollision()
+{
+	// Collision with gun border
+	if (sprite.getPosition().x > gunBorder.getPosition().x
+		&& sprite.getPosition().x < gunBorder.getPosition().x + 64
+		&& sprite.getPosition().y > gunBorder.getPosition().y
+		&& sprite.getPosition().y < gunBorder.getPosition().y + 64
+		&& !withWeapon)
+	{
+		return true;
+	}
+	else return false;
+}
+
+void Player::knifeAttackAnimation()
+{
+	sf::Time deltaTime = clock.restart();
+	float deltaTimeSeconds = deltaTime.asSeconds();
+
+	elapsedTime += deltaTimeSeconds * 4;
+	if (elapsedTime >= 0.07f) {
+		currentFrame++;
+		if (currentFrame > 3) {
+			currentFrame = 0;
+		}
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 128, 32, 32));
+		elapsedTime = 0.0f;
+	}
+}
+
+void Player::attackAnimation()
+{
+	sf::Time deltaTime = clock.restart();
+	float deltaTimeSeconds = deltaTime.asSeconds();
+
+	elapsedTime += deltaTimeSeconds * 4;
+	if (elapsedTime >= 0.07f) {
+		currentFrame++;
+		if (currentFrame > 13) {
+			currentFrame = 0;
+		}
+		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32));
+		elapsedTime = 0.0f;
+	}
+}
+
+
+void Player::setPlayerPosition(float pos_x, float pos_y)
+{
+	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
+}
+
+void Player::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
+{
+	sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
+}
+
+void Player::setWithKnife(bool withKnife)
+{
+	this->withKnife = withKnife;
+}
+
 
 unsigned short Player::getGunAmmo()
 {
@@ -118,73 +196,6 @@ float Player::getPlayerCoordinateY()
 float Player::getRotation()
 {
 	return rotation;
-}
-
-sf::Vector2f Player::getAimDirNorm()
-{
-	return aimDirNorm;
-}
-
-void Player::setPlayerPosition(float pos_x, float pos_y)
-{
-	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
-}
-
-void Player::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
-{
-	sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
-}
-
-void Player::setWithKnife(bool withKnife)
-{
-	this->withKnife = withKnife;
-}
-
-// weapon collision
-bool Player::weaponCollision()
-{
-	// Collision with gun border
-	if (sprite.getPosition().x > gunBorder.getPosition().x
-		&& sprite.getPosition().x < gunBorder.getPosition().x + 64
-		&& sprite.getPosition().y > gunBorder.getPosition().y
-		&& sprite.getPosition().y < gunBorder.getPosition().y + 64
-		&& !withWeapon)
-	{
-		return true;
-	}
-	else return false;
-}
-
-void Player::knifeAttackAnimation()
-{
-	sf::Time deltaTime = clock.restart(); 
-	float deltaTimeSeconds = deltaTime.asSeconds(); 
-
-	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.07f) {
-		currentFrame++;
-		if (currentFrame > 3) {
-			currentFrame = 0;
-		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 128, 32, 32)); 
-		elapsedTime = 0.0f;
-	}
-}
-
-void Player::attackAnimation()
-{
-	sf::Time deltaTime = clock.restart(); 
-	float deltaTimeSeconds = deltaTime.asSeconds(); 
-
-	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.07f) {
-		currentFrame++;
-		if (currentFrame > 13) {
-			currentFrame = 0;
-		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 32, 32, 32)); 
-		elapsedTime = 0.0f;
-	}
 }
 
 const bool Player::getAttackTimer()
@@ -239,26 +250,12 @@ sf::FloatRect Player::getPlayerGlobalBounds()
 	return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
 }
 
-// Walk Animation
-void Player::walkAnimation()
+sf::Vector2f Player::getAimDirNorm()
 {
-	deltaTime = clock.restart(); // getting elapsed time
-	deltaTimeSeconds = deltaTime.asSeconds(); // conversion to seconds
-
-	elapsedTime += deltaTimeSeconds * 4;
-	if (elapsedTime >= 0.3f) { // time between sprites
-		currentFrame++;
-		if (currentFrame > 14) { // number of sprites - 1 in one cycle
-			currentFrame = 0;
-		}
-		sprite.setTextureRect(sf::IntRect(currentFrame * 32, 0, 32, 32)); // set new texture rect 
-		elapsedTime = 0.0f;
-	}
+	return aimDirNorm;
 }
 
-
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
-
 
 void Player::updateAttack()
 {

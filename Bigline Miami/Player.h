@@ -5,6 +5,7 @@
 class Player
 {
 private:
+	// Private variables
 	sf::Sprite sprite;
 	sf::Sprite legs;
 	sf::Texture texture;
@@ -36,9 +37,7 @@ private:
 	sf::Int32 attackTimerMax;
 	sf::Int32 knifeAttackTimerMax;
 
-	// Private variables
 	float movementSpeed;
-
 	
 	int currentFrame = 0; // current frame index 
 	float elapsedTime = 0.0f; // elipsed time
@@ -54,8 +53,6 @@ private:
 	void initVariables();
 	void initTexture();
 	void initSprite(sf::RenderTarget& window);
-
-	// Weapon section
 	void initWeapon();
 
 public:
@@ -63,37 +60,35 @@ public:
 	Player(sf::RenderTarget& window);
 	~Player();
 
-	bool timer(sf::Time& time);
-
 	// Public functions
+	bool timer(sf::Time& time);
 	void move(const float dirX, const float dirY);
-
-	unsigned short getGunAmmo();
-	float getPlayerCoordinateX();
-	float getPlayerCoordinateY();
-	
-	float getRotation();
-
-	sf::Vector2f getAimDirNorm();
-
-	void setPlayerPosition(float pos_x, float pos_y);
-	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
-
-	void setWithKnife(bool withKnife);
+	void walkAnimation();
 
 	// Actions with weapon
 	bool weaponCollision();
 	void knifeAttackAnimation();
 	void attackAnimation();
-	const bool getAttackTimer();
-	const bool getAttackTimer(sf::Int32 TimerMax);
+
 	const bool canAttack();
 	bool WithWeapon();
 	bool WithKnife();
 
-	sf::FloatRect getPlayerGlobalBounds();
+	// Setters
+	void setPlayerPosition(float pos_x, float pos_y);
+	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
+	void setWithKnife(bool withKnife);
 
-	void walkAnimation();
+	// Getters
+	unsigned short getGunAmmo();
+	float getPlayerCoordinateX();
+	float getPlayerCoordinateY();
+	float getRotation();
+	const bool getAttackTimer();
+	const bool getAttackTimer(sf::Int32 TimerMax);
+	sf::FloatRect getPlayerGlobalBounds();
+	sf::Vector2f getAimDirNorm();
+
 
 	void updateAttack();
 	void updateAnimation(sf::RenderTarget& window, sf::View view);

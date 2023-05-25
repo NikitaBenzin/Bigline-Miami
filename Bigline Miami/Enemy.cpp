@@ -3,6 +3,10 @@
 
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
+/**
+*   @ return void
+*   - initialization of all variables which don't have own init func
+*/
 void Enemy::initVariables()
 {
     movementSpeed = 3.f;
@@ -23,6 +27,10 @@ void Enemy::initTexture()
     texture.loadFromFile("textures/enemy-spritesheet.png");
 }
 
+/**
+*   @ return void
+*   - initialization of enemy sprite
+*/
 void Enemy::initSprite(float pos_x, float pos_y)
 {
     // enemy sprite
@@ -33,6 +41,10 @@ void Enemy::initSprite(float pos_x, float pos_y)
     sprite.setPosition(pos_x, pos_y);
 }
 
+/**
+*   @ return void
+*   - initialization of all figures for enemy view
+*/
 void Enemy::initTriangle()
 {
     // enemy view
@@ -69,10 +81,17 @@ void Enemy::initTriangle()
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
+/**
+*   Game class base constructor
+*/
 Enemy::Enemy()
 {
 }
 
+/**
+*   Game class constructor
+*   - accept arguments for positioning and set bool enemy Dead which is actually not working ¯\_(ツ)_/¯
+*/
 Enemy::Enemy(float pos_x, float pos_y, bool is_dead)
 {
     enemyDead = is_dead;
@@ -88,6 +107,57 @@ Enemy::~Enemy()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
+/**
+*   @ return void
+*   - set sprite texture rectangle from spritesheet
+*/
+void Enemy::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
+{
+    if (!enemyDead)
+    {
+        sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
+    }
+}
+
+void Enemy::setEnemyView(float view_length)
+{
+    viewLengthTriangle = view_length;
+    longView.setSize(sf::Vector2f(longView.getSize().x, viewLengthTriangle));
+}
+
+void Enemy::setEnemyViewLength(float view_length, float view_width)
+{
+    viewLength = view_length;
+    viewWidth = view_width;
+    triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
+    triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
+}
+
+void Enemy::setRectangleViewSize(float size)
+{
+    rectangleView.setOrigin(rectangleView.getSize().x, rectangleView.getSize().y / 2);
+    rectangleView.setSize(sf::Vector2f(size, size));
+}
+
+/**
+*   @ return void
+*   - set enemy dead
+*/
+void Enemy::setDead(bool dead)
+{
+    enemyDead = dead;
+}
+
+void Enemy::setPosition(float pos_x, float pos_y)
+{
+    sprite.setPosition(sf::Vector2f(pos_x, pos_y));
+}
+
+void Enemy::setCknocked(bool state)
+{
+    enemyCknocked = state;
+}
+
 float Enemy::getEnemyPosX()
 {
     return sprite.getPosition().x;
@@ -98,14 +168,91 @@ float Enemy::getEnemyPosY()
     return sprite.getPosition().y;
 }
 
-void Enemy::setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight)
+float Enemy::getEnemyViewLength()
 {
-    if (!enemyDead)
-    {
-        sprite.setTextureRect(sf::IntRect(rectLeft, rectTop, rectWidth, rectHeight));
-    }
+    return viewLength;
 }
 
+float Enemy::getEnemyViewWidth()
+{
+    return viewWidth;
+}
+
+float Enemy::getEnemyViewLengthTriangle()
+{
+    return viewLengthTriangle;
+}
+
+float Enemy::getEnemyViewWidthTriangle()
+{
+    return viewWidthTriangle;
+}
+
+float Enemy::getRectangleViewSize()
+{
+    return rectangleView.getSize().x;
+}
+
+bool Enemy::getCknocked()
+{
+    if (enemyCknocked) return true;
+    else return false;
+}
+
+bool Enemy::getEnemyDead()
+{
+    return enemyDead;
+}
+
+sf::FloatRect Enemy::getViewRectBounds()
+{
+    newWidth = longView.getGlobalBounds().width / 2.0f;
+    newHeight = longView.getGlobalBounds().height / 2.0f;
+    newX = longView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = longView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
+sf::FloatRect Enemy::getViewRectangleBounds()
+{
+    newWidth = rectangleView.getGlobalBounds().width / 2.0f;
+    newHeight = rectangleView.getGlobalBounds().height / 2.0f;
+    newX = rectangleView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = rectangleView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
+sf::FloatRect Enemy::getBounds()
+{
+    newWidth = sprite.getGlobalBounds().width / 2.0f;
+    newHeight = sprite.getGlobalBounds().height / 2.0f;
+    newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
+    newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
+sf::FloatRect Enemy::getViewBounds()
+{
+    newWidth = triangle.getGlobalBounds().width / 2.0f;
+    newHeight = triangle.getGlobalBounds().height / 2.0f;
+    newX = triangle.getGlobalBounds().left + triangle.getGlobalBounds().width / 2.0f;
+    newY = triangle.getGlobalBounds().top + triangle.getGlobalBounds().height / 4.0f;
+
+    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+}
+
+void Enemy::stop()
+{
+    sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
+}
+
+/**
+*   @ return void
+*   - function which play animation of walk
+*/
 void Enemy::enemyWalkAnimaton()
 {
     deltaTimeForAnim = clock.restart();
@@ -138,113 +285,26 @@ void Enemy::enemyAttackAnimation()
     }
 }
 
-sf::FloatRect Enemy::getBounds()
+/**
+*   @ return const bool
+*   - when timer is over return true else false
+*/
+const bool Enemy::timer()
 {
-    newWidth = sprite.getGlobalBounds().width / 2.0f;
-    newHeight = sprite.getGlobalBounds().height / 2.0f;
-    newX = sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
-    newY = sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
-
-    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
-}
-
-sf::FloatRect Enemy::getViewBounds()
-{
-    newWidth = triangle.getGlobalBounds().width / 2.0f;
-    newHeight = triangle.getGlobalBounds().height / 2.0f;
-    newX = triangle.getGlobalBounds().left + triangle.getGlobalBounds().width / 2.0f;
-    newY = triangle.getGlobalBounds().top + triangle.getGlobalBounds().height / 4.0f;
-
-    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
-}
-
-void Enemy::setDead(bool dead)
-{
-    enemyDead = dead;
-}
-
-bool Enemy::getEnemyDead()
-{
-    return enemyDead;
-}
-
-void Enemy::setEnemyView(float view_length)
-{
-    viewLengthTriangle = view_length;
-    longView.setSize(sf::Vector2f(longView.getSize().x, viewLengthTriangle));
-}
-
-void Enemy::setEnemyViewLength(float view_length, float view_width)
-{
-    viewLength = view_length;
-    viewWidth = view_width;
-    triangle.setPoint(1, sf::Vector2f(viewLength, -viewWidth));
-    triangle.setPoint(2, sf::Vector2f(viewLength, viewWidth));
-}
-
-void Enemy::setRectangleViewSize(float size)
-{
-    rectangleView.setOrigin(rectangleView.getSize().x, rectangleView.getSize().y / 2);
-    rectangleView.setSize(sf::Vector2f(size, size));
-}
-
-void Enemy::stop()
-{
-    sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
-}
-
-void Enemy::setPosition(float pos_x, float pos_y)
-{
-    sprite.setPosition(sf::Vector2f(pos_x, pos_y));
-}
-
-float Enemy::getEnemyViewLength()
-{
-    return viewLength;
-}
-
-float Enemy::getEnemyViewWidth()
-{
-    return viewWidth;
-}
-
-float Enemy::getEnemyViewLengthTriangle()
-{
-    return viewLengthTriangle;
-}
-
-float Enemy::getEnemyViewWidthTriangle()
-{
-    return viewWidthTriangle;
-}
-
-float Enemy::getRectangleViewSize()
-{
-    return rectangleView.getSize().x;
-}
-
-sf::FloatRect Enemy::getViewRectBounds()
-{
-    newWidth = longView.getGlobalBounds().width / 2.0f;
-    newHeight = longView.getGlobalBounds().height / 2.0f;
-    newX = longView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
-    newY = longView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
-
-    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
-}
-
-sf::FloatRect Enemy::getViewRectangleBounds()
-{
-    newWidth = rectangleView.getGlobalBounds().width / 2.0f;
-    newHeight = rectangleView.getGlobalBounds().height / 2.0f;
-    newX = rectangleView.getGlobalBounds().left + sprite.getGlobalBounds().width / 4.0f;
-    newY = rectangleView.getGlobalBounds().top + sprite.getGlobalBounds().height / 4.0f;
-
-    return sf::FloatRect(sf::Vector2f(newX, newY), sf::Vector2f(newWidth, newHeight));
+    if (gameTimer.getElapsedTime().asMilliseconds() >= enemyCknockTime)
+    {
+        gameTimer.restart();
+        return true;
+    }
+    return false;
 }
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
+/**
+*   @ return bool
+*   - when player bounds and enemy view bounds intersects function return true
+*/
 bool Enemy::updateEnemyView(sf::FloatRect bounds)
 {
     triangle.setPosition(sprite.getPosition().x, sprite.getPosition().y);
@@ -262,14 +322,10 @@ bool Enemy::updateEnemyView(sf::FloatRect bounds)
 
 }
 
-void Enemy::updateEnemyDead()
-{
-    if (enemyDead)
-    {
-        sprite.setTextureRect(sf::IntRect(0, 64, 32, 32)); // start frame
-    }
-}
-
+/**
+*   @ return bool
+*   - move enemy to player if player in the enemy view 
+*/
 bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     
@@ -304,6 +360,10 @@ bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
     return false;
 }
 
+/**
+*   @ return void
+*   - rotate enemy to player 
+*/
 void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 {
     sf::Vector2f spritePosition = sprite.getPosition();
@@ -316,17 +376,10 @@ void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
     rectangleView.setRotation(rotation);
 }
 
-void Enemy::Cknocked(bool state)
-{
-    enemyCknocked = state;
-}
-
-bool Enemy::getCknocked()
-{
-    if (enemyCknocked) return true;
-    else return false;
-}
-
+/**
+*   @ return void
+*   - call all update functions from Enemy class
+*/
 void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     updateEnemyDead();
@@ -337,18 +390,11 @@ void Enemy::update(sf::Vector2f playerPosition, sf::FloatRect bounds)
     }
 }
 
-const bool Enemy::timer()
-{
-    if (gameTimer.getElapsedTime().asMilliseconds() >= enemyCknockTime)
-    {
-        gameTimer.restart();
-        return true;
-    }
-    return false;
-}
-
 // ------------------------------------ RENDER ------------------------------------ // 
-
+/**
+*   @ return void
+*   - render all staff
+*/
 void Enemy::render(sf::RenderTarget& target)
 {
     target.draw(triangle);

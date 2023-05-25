@@ -6,10 +6,12 @@
 class Enemy
 {
 private:
+
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Clock clock;
-	// Create triangle which will be enemy view
+
+	// Create triangle and two rects which will be enemy view
 	sf::ConvexShape triangle;
 	sf::RectangleShape longView;
 	sf::RectangleShape rectangleView;
@@ -57,41 +59,36 @@ public:
 	Enemy(float pos_x, float pos_y, bool is_dead);
 	~Enemy();
 
-	float getEnemyPosX();
-	float getEnemyPosY();
-
+	// Setters
 	void setTexture(int rectLeft, int rectTop, int rectWidth, int rectHeight);
 	void setEnemyView(float view_length);
 	void setEnemyViewLength(float view_length, float view_width);
 	void setRectangleViewSize(float size);
+	void setDead(bool dead);
+	void setPosition(float pos_x, float pos_y);
+	void setCknocked(bool state);
+
+	// Getters
+	float getEnemyPosX();
+	float getEnemyPosY();
 	float getEnemyViewLength();
 	float getEnemyViewWidth();
 	float getRectangleViewSize();
-
-	sf::FloatRect getViewRectangleBounds();
-	sf::FloatRect getViewRectBounds();
-
 	float getEnemyViewLengthTriangle();
 	float getEnemyViewWidthTriangle();
-
-	void enemyWalkAnimaton();
-	void enemyAttackAnimation();
-
+	bool getCknocked();
+	bool getEnemyDead();
+	sf::FloatRect getViewRectangleBounds();
+	sf::FloatRect getViewRectBounds();
 	sf::FloatRect getBounds();
 	sf::FloatRect getViewBounds();
 
-	void setDead(bool dead);
-	bool getEnemyDead();
-
 	void stop();
-	void setPosition(float pos_x, float pos_y);
-
+	void enemyWalkAnimaton();
+	void enemyAttackAnimation();
 	const bool timer();
-
-	void Cknocked(bool state);
-	bool getCknocked();
 	
-	void updateEnemyDead();
+	// Update functions
 	bool updateEnemyView(sf::FloatRect bounds);
 	bool updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void updateEnemyRotation(sf::Vector2f playerPosition);

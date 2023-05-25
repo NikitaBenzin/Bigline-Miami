@@ -5,7 +5,7 @@
 class Map
 {
 private:
-
+	// Private variables
 	static const short columns = 1;
 	static const short rows = 1;
 	static const short mapItems = 10;
@@ -14,6 +14,10 @@ private:
 	sf::Texture ground, corner, wall, entrance, window;
 
 	/*
+		For craeting map in two level array
+		After creating a map, call initTexture,initMap and initMapParts
+		in constructor =D
+
 		218 - to right top corner	
 		191 - to bottom top corner  
 		192 - to right bottom corner
@@ -45,6 +49,7 @@ private:
 
 	sf::RectangleShape* mapRectangles[mapItems];
 
+	// Private functions
 	void initTexture();
 	void initMapParts();
 	void initMap();
@@ -58,6 +63,7 @@ public:
 	bool updateWallCollision(float pos_x, float pos_y);
 	short updateCollisionDiraction(float pos_x, float pos_y, sf::FloatRect bounds);
 	void update(sf::FloatRect player_bounds);
+
 	void render(sf::RenderTarget& target);
 
 };

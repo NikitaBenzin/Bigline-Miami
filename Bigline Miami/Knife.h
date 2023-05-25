@@ -19,12 +19,11 @@ public:
 	Knife();
 	~Knife();
 
-	bool timer();
-
-	bool knifeCollision(sf::FloatRect playerBounds);
-
 	void setKnifeInvisible(bool state);
 	void setKnifePosition(float plyerRotation, float pos_x, float pos_y);
+
+	bool timer();
+	bool knifeCollision(sf::FloatRect playerBounds);
 
 	void render(sf::RenderTarget& target);
 };

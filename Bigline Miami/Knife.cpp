@@ -1,5 +1,6 @@
 #include "Knife.h"
 
+// ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
 void Knife::initVaribles()
 {
@@ -20,6 +21,8 @@ void Knife::initSprite()
 	knife.setPosition(500, 500);
 }
 
+// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
+
 Knife::Knife()
 {
 	initVaribles();
@@ -29,6 +32,20 @@ Knife::Knife()
 
 Knife::~Knife()
 {
+}
+
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
+
+void Knife::setKnifeInvisible(bool state)
+{
+	if (state) this->knife.setScale(0, 0);
+	else this->knife.setScale(1.5, 1.5);
+}
+
+void Knife::setKnifePosition(float plyerRotation, float pos_x, float pos_y)
+{
+	this->knife.setRotation(plyerRotation);
+	this->knife.setPosition(pos_x, pos_y);
 }
 
 bool Knife::timer()
@@ -52,17 +69,7 @@ bool Knife::knifeCollision(sf::FloatRect playerBounds)
 	return false;
 }
 
-void Knife::setKnifeInvisible(bool state)
-{
-	if (state) this->knife.setScale(0, 0);
-	else this->knife.setScale(1.5, 1.5);
-}
-
-void Knife::setKnifePosition(float plyerRotation, float pos_x, float pos_y)
-{
-	this->knife.setRotation(plyerRotation);
-	this->knife.setPosition(pos_x, pos_y);
-}
+// ------------------------------------ RENDER ------------------------------------ //
 
 void Knife::render(sf::RenderTarget& target)
 {

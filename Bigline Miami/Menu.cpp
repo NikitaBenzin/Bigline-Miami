@@ -1,5 +1,7 @@
 #include "Menu.h"
 
+// ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
+
 void Menu::initVariables()
 {
 	gameStart = false;
@@ -73,6 +75,8 @@ void Menu::initColors()
 	hoverColor = sf::Color(100, 100, 100, 150);
 }
 
+// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
+
 Menu::Menu()
 {
 	initVariables();
@@ -95,6 +99,8 @@ Menu::~Menu()
 	}
 }
 
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
+
 bool Menu::getGameStart()
 {
 	return gameStart;
@@ -104,6 +110,8 @@ bool Menu::getGameExit()
 {
 	return gameExit;
 }
+
+// ------------------------------------ UPDATE FUNCTIONS ------------------------------------ //
 
 void Menu::updateEvents(sf::RenderTarget& target)
 {
@@ -185,6 +193,8 @@ void Menu::update(sf::RenderTarget& target)
 {
 	updateEvents(target);
 }
+
+// ------------------------------------ RENDER ------------------------------------ // 
 
 void Menu::render(sf::RenderTarget& target)
 {

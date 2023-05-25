@@ -5,6 +5,7 @@
 class Pause
 {
 private:
+	// Private variables
 	bool pause;
 	bool quit;
 
@@ -14,6 +15,7 @@ private:
 	std::vector<sf::RectangleShape*> btns;
 	sf::Color hoverColor;
 
+	// Private functions
 	void initVariables();
 	void initBtns();
 
@@ -21,6 +23,7 @@ public:
 	Pause();
 	~Pause();
 
+	// Public functions
 	void setPause(bool pause);
 	bool getPause();
 	bool getQuit();

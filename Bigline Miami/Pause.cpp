@@ -1,5 +1,7 @@
 #include "Pause.h"
 
+// ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
+
 void Pause::initVariables()
 {
 	pause = false;
@@ -30,6 +32,8 @@ void Pause::initBtns()
 	}
 }
 
+// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
+
 Pause::Pause()
 {
 	initVariables();
@@ -43,6 +47,8 @@ Pause::~Pause()
 		delete btns[i];
 	}
 }
+
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
 void Pause::setPause(bool pause)
 {
@@ -58,6 +64,8 @@ bool Pause::getQuit()
 {
 	return quit;
 }
+
+// ------------------------------------ UPDATE FUNCTIONS ------------------------------------ //
 
 void Pause::updateEvents()
 {
@@ -77,7 +85,7 @@ void Pause::updateEvents()
 
 	// QUIT btn
 	if (btns[1]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && pause)
 	{
 		quit = true;
 	}
@@ -88,6 +96,8 @@ void Pause::update()
 {
 	updateEvents();
 }
+
+// ------------------------------------ RENDER ------------------------------------ // 
 
 void Pause::render(sf::RenderTarget& target)
 {

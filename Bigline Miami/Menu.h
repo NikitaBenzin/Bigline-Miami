@@ -5,6 +5,7 @@
 class Menu
 {
 private:
+	// Private variables
 	bool gameStart;
 	bool gameExit;
 	bool gameInfo;
@@ -15,13 +16,9 @@ private:
 	std::vector<sf::RectangleShape*> btns;
 	sf::Color hoverColor;
 
-	void initVariables();
-	void initColors();
-	void initBtns();
-
 	// For INFO btn
 	sf::RectangleShape* infoBg;
-	sf::Texture *infoBgTexture;
+	sf::Texture* infoBgTexture;
 	void openInfo(sf::RenderTarget& target);
 	// scrollbar for info 
 	std::vector<sf::RectangleShape*> scrollbar;
@@ -29,15 +26,22 @@ private:
 	float newY;
 	bool isDragging;
 
+	// Private functions
+	void initVariables();
+	void initColors();
+	void initBtns();
+
 public:
+	// Constructor / Destructor
 	Menu();
 	~Menu();
 
+	// Public functions
 	bool getGameStart();
 	bool getGameExit();
 
 	void updateEvents(sf::RenderTarget& target);
 	void update(sf::RenderTarget& target);
+
 	void render(sf::RenderTarget& target);
 };
-

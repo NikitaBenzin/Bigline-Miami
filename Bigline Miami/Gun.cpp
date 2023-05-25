@@ -22,8 +22,38 @@ void Gun::initSprite()
 	sprite.setTexture(texture);
 	sprite.scale(1.25, 1.25);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-	// sprite.setRotation(45);
 	sprite.setPosition(500, 400);
+}
+
+// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
+
+Gun::Gun()
+{
+	initVariables();
+	initTexture();
+	initSprite();
+}
+
+Gun::~Gun()
+{
+
+}
+
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
+
+void Gun::setPistolAmmo(unsigned short pistolAmmo)
+{
+	this->pistolAmmo = pistolAmmo;
+}
+
+void Gun::setPosition(float pos_x, float pos_y)
+{
+	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
+}
+
+void Gun::setRotation(float rotation)
+{
+	sprite.setRotation(rotation);
 }
 
 float Gun::getPositionX()
@@ -54,46 +84,6 @@ void Gun::makeVisible()
 void Gun::dropTheWeapon(float player_pos_x, float player_pos_y)
 {
 	sprite.setPosition(sf::Vector2f(player_pos_x, player_pos_y));
-}
-
-void Gun::setPistolAmmo(unsigned short pistolAmmo)
-{
-	this->pistolAmmo = pistolAmmo;
-}
-
-void Gun::setPosition(float pos_x, float pos_y)
-{
-	sprite.setPosition(sf::Vector2f(pos_x, pos_y));
-}
-
-void Gun::setRotation(float rotation)
-{
-	sprite.setRotation(rotation);
-}
-
-// -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
-
-
-Gun::Gun()
-{
-	initVariables();
-	initTexture();
-	initSprite();
-}
-
-Gun::~Gun()
-{
-
-}
-
-// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
-
-
-// ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
-
-void Gun::update(sf::Vector2i mousePosition, sf::RenderTarget& target)
-{
-
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 

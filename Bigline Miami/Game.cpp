@@ -1,8 +1,10 @@
 #include "Game.h"
 
-using namespace sf;
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
-
+/**
+*   @ return void
+*   - initialization of all variables which don't have own init func
+*/
 void Game::initVariables()
 {
     currVelocity = sf::Vector2f(0.f, 0.f);
@@ -24,31 +26,50 @@ void Game::initVariables()
 
 } 
 
+/**
+*   @ return void
+*   - initialization of window and set window frame limit
+*/
 void Game::initWindow()
 {
-    //  sf::Style::Fullscreen
     window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
+    //window = new sf::RenderWindow(sf::VideoMode(1280, 920), "Bigline Miami");
     window->setFramerateLimit(60);
 }
 
+/**
+*   @ return void
+*   - initialization of menu and pause
+*/
 void Game::initMenu()
 {
     menu = new Menu;
     pause = new Pause;
 }
 
+/**
+*   @ return void
+*   - initialization of textures for bullets
+*/
 void Game::initTextures()
 {
     textures["BULLET"] = new sf::Texture();
     textures["BULLET"]->loadFromFile("textures/bullet.png");
 }
 
-
+/**
+*   @ return void
+*   - initialization of player and set bool variable playerDead to false
+*/
 void Game::initPlayer()
 {
     player = new Player(*window);
 }
 
+/**
+*   @ return void
+*   - initialization of text, font and colors
+*/
 void Game::initText()
 {
     // ammo text
@@ -68,12 +89,25 @@ void Game::initText()
     restartText.setPosition(window->getSize().x / 2 - 175, window->getSize().y / 2 - 50);
 }
 
+/**
+*   @ return void
+*   - initialization of enemies
+*   - adding in enemies vector array
+*   - also create enemy which is not in array because without this hero game closing when player kill enemies
+*/
 void Game::initEnemies()
 {
     enemy = new Enemy(0, 0, true);
     enemies.push_back(new Enemy(100, 500, false));
+    enemies.push_back(new Enemy(100, 200, false));
+    enemies.push_back(new Enemy(100, 700, false));
 }
 
+/**
+*   @ return void
+*   - initialization of bullet which is showing when player with gun
+*   - decoration thing
+*/
 void Game::initBullet()
 {
     bulletFirst = (new Bullet(textures["BULLET"],
@@ -85,12 +119,13 @@ void Game::initBullet()
         270.f));
     bulletFirst->sprite.setScale(1.2,1.2);
     bulletFirst->sprite.setColor(sf::Color::Transparent);
-}
+} 
 
 /**
 *   @ return void
 *   - restart function
 *   - delete player and enemy and re-create it
+*   - also set bool playerDead to false and clear restart text
 */
 void Game::restart()
 {
@@ -107,6 +142,10 @@ void Game::restart()
     restartText.setString("");
 }
 
+/**
+*   @ return void
+*   - clear all enemies from array (for game restart)
+*/
 void Game::clearEnemies()
 {
     enemies.clear();
@@ -117,19 +156,30 @@ void Game::clearEnemies()
     }
 }
 
+/**
+*   @ return void
+*   - initialization of knife
+*/
 void Game::initKnife()
 {
     knife = new Knife;
 }
 
+/**
+*   @ return void
+*   - initialization of map
+*/
 void Game::initMap()
 {
     map = new Map;
 }
 
-
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
+/**
+*   Game class constructor
+*   - call all init functions
+*/
 Game::Game()
 {
     initWindow();
@@ -144,6 +194,10 @@ Game::Game()
     initMap();
 }
 
+/**
+*   Game class destructor
+*   - delete all variables and clear memory
+*/
 Game::~Game()
 {
     delete player;
@@ -176,6 +230,11 @@ Game::~Game()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
+/**
+*   @ return void
+*   - Game loop which call update and render
+*   - is working while window is open
+*/
 void Game::run()
 {
     while (window->isOpen())
@@ -186,35 +245,13 @@ void Game::run()
 }
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
+
 /**
 *   @ return void
-*   - update all staff
+*   - update enemies and player collision
+*   - update player and knife collision
+*   - update player and walls collision
 */
-void Game::update()
-{
-    updatePollEvents();
-
-    if (!menu->getGameStart())
-    {
-        menu->update(*window);
-    }
-    else
-    {
-        if (!playerDead && !pause->getPause())
-        {
-            updateInput();
-            mousePosition = sf::Mouse::getPosition(*window);
-            player->update(mousePosition, *window, view);
-            updateBullets();
-            updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
-            updateEnemiesView();
-            updateEnemiesWallCollision();
-        }
-        updateText();
-        pause->update();
-    }
-}
-
 void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
 {
     for (size_t i = 0; i < enemies.size(); i++)
@@ -288,6 +325,10 @@ void Game::updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds)
     }
 }
 
+/**
+*   @ return void
+*   - update bullets collision with walls and screen
+*/
 void Game::updateBullets()
 {
     
@@ -316,16 +357,20 @@ void Game::updateBullets()
                 bullets.erase(bullets.begin() + i);
                 enemies[j]->setTexture(0, 64, 32, 32);
                 enemies[j]->setDead(true);
-                
             }
         }
-
-        
     }
+
+}
+
+/**
+*   @ return void
+*   - update enemies positions
+*/
+void Game::updateEnemies()
+{
     for (size_t i = 0; i < enemies.size(); i++)
     {
-        
-
         if (!enemies[i]->getEnemyDead() && !enemies[i]->getCknocked())
         {
             enemies[i]->update(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
@@ -336,13 +381,17 @@ void Game::updateBullets()
             if (enemies[i]->timer())
             {
                 enemies[i]->setTexture(0, 32, 32, 32);
-                enemies[i]->Cknocked(false);
+                enemies[i]->setCknocked(false);
             }
-            
+
         }
     }
 }
 
+/**
+*   @ return void
+*   - update window events and keyboard input
+*/
 void Game::updatePollEvents()
 {
     while (window->pollEvent(event))
@@ -363,8 +412,14 @@ void Game::updatePollEvents()
     }
 }
 
+/**
+*   @ return void
+*   - update mouse input
+*   - implements knife kill, arm hit and bullet creating
+*/
 void Game::updateInput()
 {
+    // shooting
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->WithWeapon())
     {
         currVelocity = player->getAimDirNorm() * bulletFirst->getMovementSpeed();
@@ -382,7 +437,7 @@ void Game::updateInput()
         }
         else player->setTexture(0, 64, 32, 32);
     }
-
+    // knife kill
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && player->WithKnife())
     {
         for (size_t j = 0; j < enemies.size(); j++)
@@ -394,7 +449,7 @@ void Game::updateInput()
             }
         }
     }
-
+    // arm hit
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !player->WithKnife() && !player->WithWeapon())
     {
         for (size_t j = 0; j < enemies.size(); j++)
@@ -403,16 +458,18 @@ void Game::updateInput()
                 && !enemies[j]->getEnemyDead()
                 && !enemies[j]->getCknocked())
             {
-                std::cout << "Ckock\n";
                 enemies[j]->setTexture(32, 64, 32, 32);
-                enemies[j]->Cknocked(true);
-                
+                enemies[j]->setCknocked(true);
             }
             
         }
     }
 }
 
+/**
+*   @ return void
+*   - update text (show how much ammo in the gun) 
+*/
 void Game::updateText()
 {
     if (player->WithWeapon())
@@ -430,6 +487,10 @@ void Game::updateText()
     }
 }
 
+/**
+*   @ return void
+*   - update enemies view collision with walls
+*/
 void Game::updateEnemiesView()
 {
     for (short i = 0; i < enemies.size(); i++)
@@ -465,7 +526,10 @@ void Game::updateEnemiesView()
     }
 }
 
-
+/**
+*   @ return void
+*   - update enemies collision with walls
+*/
 void Game::updateEnemiesWallCollision()
 {
     for (short i = 0; i < enemies.size(); i++)
@@ -493,6 +557,35 @@ void Game::updateEnemiesWallCollision()
     }
 }
 
+/**
+*   @ return void
+*   - update all staff
+*/
+void Game::update()
+{
+    updatePollEvents();
+
+    if (!menu->getGameStart())
+    {
+        menu->update(*window);
+    }
+    else
+    {
+        if (!playerDead && !pause->getPause())
+        {
+            updateInput();
+            mousePosition = sf::Mouse::getPosition(*window);
+            player->update(mousePosition, *window, view);
+            updateBullets();
+            updateGameIvents(sf::Vector2f(player->getPlayerCoordinateX(), player->getPlayerCoordinateY()), player->getPlayerGlobalBounds());
+            updateEnemies();
+            updateEnemiesView();
+            updateEnemiesWallCollision();
+        }
+        updateText();
+        pause->update();
+    }
+}
 
 // ------------------------------------ RENDER ------------------------------------ // 
 /**
