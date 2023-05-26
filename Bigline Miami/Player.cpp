@@ -268,7 +268,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 	// Move player
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) || 
 		sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
-		sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+		sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
 		if (!withWeapon && !withKnife)
 		{

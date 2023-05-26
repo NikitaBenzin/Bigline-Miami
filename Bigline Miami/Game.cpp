@@ -133,6 +133,7 @@ void Game::restart()
 
     initPlayer();
     initEnemies();
+    setEnemies(menu->getGameSelectedLevel());
     initKnife();
     
     playerDead = false;
