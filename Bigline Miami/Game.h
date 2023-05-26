@@ -74,7 +74,7 @@ private:
 	// restart function
 	void restart();
 	void clearEnemies();
-
+	void setEnemies(short selected_level);
 public:
 	// Constructor / Destructor
 	Game();

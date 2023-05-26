@@ -98,9 +98,6 @@ void Game::initText()
 void Game::initEnemies()
 {
     enemy = new Enemy(0, 0, true);
-    enemies.push_back(new Enemy(100, 500, false));
-    enemies.push_back(new Enemy(100, 200, false));
-    enemies.push_back(new Enemy(100, 700, false));
 }
 
 /**
@@ -153,6 +150,25 @@ void Game::clearEnemies()
     for (size_t i = 0; i < enemies.size(); i++)
     {
         delete enemies[i];
+    }
+}
+
+void Game::setEnemies(short selected_level)
+{
+    if (selected_level == 1)
+    {
+        enemies.push_back(new Enemy(100, 500, false));
+    }
+    else if (selected_level == 2)
+    {
+        enemies.push_back(new Enemy(100, 200, false));
+        enemies.push_back(new Enemy(100, 500, false));
+    }
+    else if (selected_level == 3)
+    {
+        enemies.push_back(new Enemy(100, 700, false));
+        enemies.push_back(new Enemy(100, 500, false));
+        enemies.push_back(new Enemy(100, 200, false));
     }
 }
 
@@ -568,6 +584,21 @@ void Game::update()
     if (!menu->getGameStart())
     {
         menu->update(*window);
+        if (menu->getGameSelectedLevel() == 1) {
+            map->setLevel(1);
+            setEnemies(1);
+            menu->setGameStart(true);
+        }
+        else if (menu->getGameSelectedLevel() == 2) {
+            map->setLevel(2);
+            setEnemies(2);
+            menu->setGameStart(true);
+        }
+        else if (menu->getGameSelectedLevel() == 3) {
+            map->setLevel(3);
+            setEnemies(3);
+            menu->setGameStart(true);
+        }
     }
     else
     {

@@ -28,7 +28,7 @@ void Pause::initBtns()
 		btns[i]->setOutlineColor(sf::Color::Black);
 		btns[i]->setOutlineThickness(5);
 		btns[i]->setTexture(btnsTexture);
-		btns[i]->setTextureRect(sf::IntRect(0, (i + 4) * 106, 320, 106));
+		btns[i]->setTextureRect(sf::IntRect(0, (i + 5) * 106, 320, 106));
 	}
 }
 

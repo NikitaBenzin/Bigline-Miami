@@ -2,6 +2,11 @@
 
 // ------------------------------------ PRIVATE FUNCTIONS ------------------------------------ // 
 
+void Map::initVariables()
+{
+	selectedLevel = 1;
+}
+
 void Map::initTexture()
 {
 	ground.loadFromFile("./textures/map-sheet.png", sf::IntRect(0, 0, 32, 32));
@@ -16,7 +21,6 @@ void Map::initMapParts()
 	for (int i = 0; i < columns*rows; i++)
 	{
 		mapParts[i] = new sf::Sprite;
-		
 	}
 }
 
@@ -187,20 +191,37 @@ void Map::initWalls()
 	for (int i = 0; i < mapItems; i++)
 	{
 		mapRectangles[i] = new sf::RectangleShape;
+		mapRectangles[0]->setFillColor(sf::Color::Black);
 	}
+
 	mapRectangles[0]->setSize(sf::Vector2f(40, 400));
 	mapRectangles[0]->setPosition(800, 250);
-	mapRectangles[0]->setFillColor(sf::Color::Black);
+}
 
-	mapRectangles[1]->setSize(sf::Vector2f(200, 40));
-	mapRectangles[1]->setPosition(400, 250);
-	mapRectangles[1]->setFillColor(sf::Color::Black);
+void Map::setWalls()
+{
+	if (selectedLevel == 1)
+	{
+		mapRectangles[0]->setSize(sf::Vector2f(40, 400));
+		mapRectangles[0]->setPosition(800, 250);
+	}
+	else if (selectedLevel == 2)
+	{
+		mapRectangles[0]->setSize(sf::Vector2f(40, 800));
+		mapRectangles[0]->setPosition(600, 450);
+	}
+	else if (selectedLevel == 3)
+	{
+		mapRectangles[0]->setSize(sf::Vector2f(40, 800));
+		mapRectangles[0]->setPosition(200, 750);
+	}
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
 
 Map::Map()
 {
+	initVariables();
 	initWalls();
 }
 
@@ -211,10 +232,18 @@ Map::~Map()
 	//	delete mapParts[i];
 	//}
 
-	//for (int i = 0; i < 1; i++)
-	//{
-	//	delete mapRectangles[i];
-	//}
+	for (int i = 0; i < 1; i++)
+	{
+		delete mapRectangles[i];
+	}
+}
+
+// ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
+
+void Map::setLevel(short selectedLevel)
+{
+	this->selectedLevel = selectedLevel;
+	setWalls();
 }
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 

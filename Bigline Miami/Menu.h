@@ -9,6 +9,7 @@ private:
 	bool gameStart;
 	bool gameExit;
 	bool gameInfo;
+	bool gameSelectLevel;
 
 	sf::Sprite* mainMenuBg;
 	sf::Texture bgTexture;
@@ -26,6 +27,11 @@ private:
 	float newY;
 	bool isDragging;
 
+	// For Select Level
+	sf::Texture* btnsLevelTexture;
+	void openSelectLevel(sf::RenderTarget& target);
+	short selectedLevel;
+
 	// Private functions
 	void initVariables();
 	void initColors();
@@ -37,8 +43,11 @@ public:
 	~Menu();
 
 	// Public functions
+	void setGameStart(bool gameStart);
+	
 	bool getGameStart();
 	bool getGameExit();
+	short getGameSelectedLevel();
 
 	void updateEvents(sf::RenderTarget& target);
 	void update(sf::RenderTarget& target);

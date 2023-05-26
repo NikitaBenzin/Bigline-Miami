@@ -301,6 +301,15 @@ const bool Enemy::timer()
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
+void Enemy::updateEnemyDead()
+{
+    if (enemyDead)
+    {
+        sprite.setTextureRect(sf::IntRect(0, 64, 32, 32)); // start frame
+    }
+}
+
+
 /**
 *   @ return bool
 *   - when player bounds and enemy view bounds intersects function return true

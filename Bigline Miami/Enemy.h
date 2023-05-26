@@ -89,6 +89,7 @@ public:
 	const bool timer();
 	
 	// Update functions
+	void updateEnemyDead();
 	bool updateEnemyView(sf::FloatRect bounds);
 	bool updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void updateEnemyRotation(sf::Vector2f playerPosition);

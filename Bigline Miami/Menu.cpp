@@ -7,6 +7,9 @@ void Menu::initVariables()
 	gameStart = false;
 	gameExit = false;
 	gameInfo = false;
+	gameSelectLevel = false;
+
+	selectedLevel = 0;
 
 	// Background
 	bgTexture.loadFromFile("textures/mainMenuBg.png");
@@ -14,6 +17,9 @@ void Menu::initVariables()
 	btnsTexture->loadFromFile("textures/mainMenuBtns.png");
 	mainMenuBg = new sf::Sprite;
 	mainMenuBg->setTexture(bgTexture);
+
+	btnsLevelTexture = new sf::Texture;
+	btnsLevelTexture->loadFromFile("textures/LevelMenu.png");
 
 	// Info bg
 	infoBg = new sf::RectangleShape;
@@ -26,7 +32,7 @@ void Menu::initVariables()
 
 void Menu::initBtns()
 {
-	for (short i = 0; i < 3; i++)
+	for (short i = 0; i < 4; i++)
 	{
 		btns.push_back(new sf::RectangleShape);
 		btns[i]->setSize(sf::Vector2f(300, 100));
@@ -36,6 +42,16 @@ void Menu::initBtns()
 		btns[i]->setTexture(btnsTexture);
 		btns[i]->setTextureRect(sf::IntRect(0, i * 106, 320, 106));
 	}
+
+	// BACK btn
+	btns.push_back(new sf::RectangleShape);
+	btns[4]->setSize(sf::Vector2f(300, 100));
+	btns[4]->setPosition(200, 150);
+	btns[4]->setOutlineColor(sf::Color::Black);
+	btns[4]->setOutlineThickness(5);
+	btns[4]->setTexture(btnsTexture);
+	btns[4]->setTextureRect(sf::IntRect(0, 424, 320, 106));
+
 }
 
 void Menu::openInfo(sf::RenderTarget& target)
@@ -59,20 +75,28 @@ void Menu::openInfo(sf::RenderTarget& target)
 	scrollbar[1]->setPosition(scrollbar[0]->getPosition().x, scrollbar[0]->getPosition().y);
 	scrollbar[1]->setFillColor(sf::Color(139, 30, 30));
 	
-	// BACK btn
-	btns.push_back(new sf::RectangleShape);
-	btns[3]->setSize(sf::Vector2f(300, 100));
-	btns[3]->setPosition(200, 150);
-	btns[3]->setOutlineColor(sf::Color::Black);
-	btns[3]->setOutlineThickness(5);
-	btns[3]->setTexture(btnsTexture);
-	btns[3]->setTextureRect(sf::IntRect(0, 318, 320, 106));
+
 }
 
 void Menu::initColors()
 {
 	// init Hover Color
 	hoverColor = sf::Color(100, 100, 100, 150);
+}
+
+void Menu::openSelectLevel(sf::RenderTarget& target)
+{
+	// LEVELS btns
+	for (short i = 5; i < 8; i++)
+	{
+		btns.push_back(new sf::RectangleShape);
+		btns[i]->setSize(sf::Vector2f(300, 100));
+		btns[i]->setPosition((target.getSize().x / 4 - (5 * 340)) + i * 350, target.getSize().y / 2 - 390);
+		btns[i]->setOutlineColor(sf::Color::Black);
+		btns[i]->setOutlineThickness(5);
+		btns[i]->setTexture(btnsLevelTexture);
+		btns[i]->setTextureRect(sf::IntRect(0, (i-5) * 106, 320, 106));
+	}
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- //
@@ -101,6 +125,11 @@ Menu::~Menu()
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
 
+void Menu::setGameStart(bool gameStart)
+{
+	this->gameStart = gameStart;
+}
+
 bool Menu::getGameStart()
 {
 	return gameStart;
@@ -109,6 +138,11 @@ bool Menu::getGameStart()
 bool Menu::getGameExit()
 {
 	return gameExit;
+}
+
+short Menu::getGameSelectedLevel()
+{
+	return selectedLevel;
 }
 
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ //
@@ -131,21 +165,29 @@ void Menu::updateEvents(sf::RenderTarget& target)
 
 	// NEW GAME btn 
 	if (btns[0]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo && !gameSelectLevel)
+	{
+		selectedLevel = 1;
+	}
+
+	// SELECT LEVEL btn 
+	if (btns[1]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
 		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo)
 	{
-		gameStart = true;
+		openSelectLevel(target);
+		gameSelectLevel = true;
 	}
 
 	// EXIT btn 
-	if (btns[2]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo)
+	if (btns[3]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo && !gameSelectLevel)
 	{
 		gameExit = true;
 	}
 
 	// INFO btn
-	if (btns[1]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
-		&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (btns[2]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameSelectLevel)
 	{
 		openInfo(target);
 		gameInfo = true;
@@ -179,14 +221,47 @@ void Menu::updateEvents(sf::RenderTarget& target)
 			infoBg->setPosition(infoBg->getPosition().x, -newY / 4);
 		}
 
-		// INFO btn
-		if (btns[3]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+		// BACK btn
+		if (btns[4]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
 			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			gameInfo = false;
 		}
 	}
 
+	if (gameSelectLevel)
+	{
+		// BACK btn
+		if (btns[4]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			gameSelectLevel = false;
+		}
+
+		// LEVEL 1
+		if (btns[5]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			selectedLevel = 1;
+			gameSelectLevel = false;
+		}
+
+		// LEVEL 2
+		if (btns[6]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			selectedLevel = 2;
+			gameSelectLevel = false;
+		}
+
+		// LEVEL 3
+		if (btns[7]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
+			&& sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			selectedLevel = 3;
+			gameSelectLevel = false;
+		}
+	}
 }
 
 void Menu::update(sf::RenderTarget& target)
@@ -199,20 +274,27 @@ void Menu::update(sf::RenderTarget& target)
 void Menu::render(sf::RenderTarget& target)
 {
 	target.draw(*mainMenuBg);
-	if (!gameInfo)
+	if (!gameInfo && !gameSelectLevel)
 	{
-		for (short i = 0; i < 3; i++)
+		for (short i = 0; i < 4; i++)
 		{
 			target.draw(*btns[i]);
 		}
 	}
-	else
+	else if (gameInfo)
 	{
 		target.draw(*infoBg);
 		for (short i = 0; i < scrollbar.size(); i++)
 		{
 			target.draw(*scrollbar[i]);
 		}
-		target.draw(*btns[3]);
+		target.draw(*btns[4]);
+	}
+	else if (gameSelectLevel)
+	{
+		for (short i = 4; i < 8; i++)
+		{
+			target.draw(*btns[i]);
+		}
 	}
 }
