@@ -77,6 +77,7 @@ public:
 	float getRectangleViewSize();
 	float getEnemyViewLengthTriangle();
 	float getEnemyViewWidthTriangle();
+	float getRotation();
 	bool getCknocked();
 	bool getEnemyDead();
 	sf::FloatRect getViewRectangleBounds();

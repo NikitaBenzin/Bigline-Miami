@@ -16,7 +16,7 @@ void Knife::initSprite()
 {
 	// knife
 	knife.setTexture(knifeTexture);
-	knife.setScale(1.5, 1.5);
+	knife.setScale(2.2, 2.2);
 	knife.setOrigin(knife.getLocalBounds().width / 2, knife.getLocalBounds().height / 2);
 	knife.setPosition(500, 500);
 }
@@ -39,7 +39,7 @@ Knife::~Knife()
 void Knife::setKnifeInvisible(bool state)
 {
 	if (state) this->knife.setScale(0, 0);
-	else this->knife.setScale(1.5, 1.5);
+	else this->knife.setScale(2.2, 2.2);
 }
 
 void Knife::setKnifePosition(float plyerRotation, float pos_x, float pos_y)

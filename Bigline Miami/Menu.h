@@ -44,7 +44,8 @@ public:
 
 	// Public functions
 	void setGameStart(bool gameStart);
-	
+	void setGameSelectedLevel(short selectedLevel);
+
 	bool getGameStart();
 	bool getGameExit();
 	short getGameSelectedLevel();

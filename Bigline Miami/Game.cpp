@@ -24,6 +24,10 @@ void Game::initVariables()
     mainColor = sf::Color(230, 120, 57);
     mainOutlineColor = sf::Color(33, 24, 27);
 
+    // arrow Go!
+    arrowTexture.loadFromFile("./textures/arrow.png");
+    arrow.setTexture(arrowTexture);
+    arrow.setScale(0.2, 0.2);
 } 
 
 /**
@@ -32,8 +36,8 @@ void Game::initVariables()
 */
 void Game::initWindow()
 {
-    window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
-    //window = new sf::RenderWindow(sf::VideoMode(1280, 920), "Bigline Miami");
+     window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "Bigline Miami", sf::Style::Fullscreen);
+    //window = new sf::RenderWindow(sf::VideoMode(1880, 920), "Bigline Miami");
     window->setFramerateLimit(60);
 }
 
@@ -87,6 +91,15 @@ void Game::initText()
     restartText.setOutlineThickness(2);
     restartText.setOutlineColor(mainOutlineColor);
     restartText.setPosition(window->getSize().x / 2 - 175, window->getSize().y / 2 - 50);
+
+    // win Text 
+    winText.setFont(font);
+    winText.setCharacterSize(84);
+    winText.setFillColor(mainColor);
+    winText.setOutlineThickness(2);
+    winText.setOutlineColor(mainOutlineColor);
+    winText.setPosition(window->getSize().x / 2 - 210, window->getSize().y / 2 - 50);
+    winText.setString("LEVEL CLEAR");
 }
 
 /**
@@ -182,8 +195,41 @@ void Game::setEnemies(short selected_level)
         player->setPlayerPosition(810, 980);
         player->setGunPosition(1350, 125);
         knife->setKnifePosition(0, 810, 750);
+        arrow.setPosition(25, 710);
+        aliveEnemies = enemies.size();
     }
     else if (selected_level == 2)
+    {
+        enemies.push_back(new Enemy(50, 450, false));
+
+        enemies.push_back(new Enemy(400, 50, false));
+        enemies[1]->setRotation(90);
+
+        enemies.push_back(new Enemy(100, 950, false));
+        enemies[2]->setRotation(-45);
+
+        enemies.push_back(new Enemy(410, 900, false));
+        enemies[3]->setRotation(-90);
+
+        enemies.push_back(new Enemy(1100, 450, false));
+        enemies[4]->setRotation(180);
+
+        enemies.push_back(new Enemy(1400, 350, false));
+        enemies[5]->setRotation(180);
+
+        enemies.push_back(new Enemy(1850, 100, false));
+        enemies[6]->setRotation(180);
+
+        enemies.push_back(new Enemy(1350, 650, false));
+        enemies[7]->setRotation(135);
+
+        player->setPlayerPosition(1700, 650);
+        player->setGunPosition(600, 100);
+        knife->setKnifePosition(0, 1700, 850);
+        arrow.setPosition(25, 75);
+        aliveEnemies = enemies.size();
+    }
+    else if (selected_level == 3)
     {
         enemies.push_back(new Enemy(100, 150, false));
         enemies[0]->setRotation(90);
@@ -212,35 +258,7 @@ void Game::setEnemies(short selected_level)
         player->setPlayerPosition(100, 980);
         player->setGunPosition(150, 100);
         knife->setKnifePosition(0, 250, 990);
-    }
-    else if (selected_level == 3)
-    {
-        enemies.push_back(new Enemy(50, 450, false));
-        
-        enemies.push_back(new Enemy(400, 50, false));
-        enemies[1]->setRotation(90);
-
-        enemies.push_back(new Enemy(100, 950, false));
-        enemies[2]->setRotation(-45);
-
-        enemies.push_back(new Enemy(410, 900, false));
-        enemies[3]->setRotation(-90);
-
-        enemies.push_back(new Enemy(1100, 450, false));
-        enemies[4]->setRotation(180);
-
-        enemies.push_back(new Enemy(1400, 350, false));
-        enemies[5]->setRotation(180);
-
-        enemies.push_back(new Enemy(1850, 100, false));
-        enemies[6]->setRotation(180);
-
-        enemies.push_back(new Enemy(1350, 650, false));
-        enemies[7]->setRotation(135);
-
-        player->setPlayerPosition(1700, 650);
-        player->setGunPosition(600, 100);
-        knife->setKnifePosition(0, 1700, 850);
+        aliveEnemies = enemies.size();
     }
 }
 
@@ -437,7 +455,7 @@ void Game::updateBullets()
         {
             bullets.erase(bullets.begin() + i);
         }
-
+        // enemy kill by bullets
         for (size_t j = 0; j < enemies.size(); j++)
         {
             if (!bullets.empty() && enemies[j]->getBounds().intersects(bullets[i]->getBounds()) && !enemies[j]->getEnemyDead())
@@ -445,6 +463,7 @@ void Game::updateBullets()
                 bullets.erase(bullets.begin() + i);
                 enemies[j]->setTexture(0, 64, 32, 32);
                 enemies[j]->setDead(true);
+                --aliveEnemies;
             }
         }
     }
@@ -534,6 +553,7 @@ void Game::updateInput()
             {
                 enemies[j]->setTexture(0, 64, 32, 32);
                 enemies[j]->setDead(true);
+                --aliveEnemies;
             }
         }
     }
@@ -587,17 +607,17 @@ void Game::updateEnemiesView()
         if (map->updateWallCollision(enemies[i]->getViewBounds())
             && !enemies[i]->getEnemyDead()
             && enemies[i]->getEnemyViewLength() > 20
-            && enemies[i]->getEnemyViewLength() < 440)
+            && enemies[i]->getEnemyViewLength() < 680)
         {
             enemies[i]->setEnemyViewLength(enemies[i]->getEnemyViewLength() - 10, enemies[i]->getEnemyViewWidth() - 5);
             if (!map->updateWallCollision(enemies[i]->getViewRectBounds()) 
-                && enemies[i]->getEnemyViewLengthTriangle() < 440)
+                && enemies[i]->getEnemyViewLengthTriangle() < 620)
                 enemies[i]->setEnemyView(enemies[i]->getEnemyViewLengthTriangle() + 10);
             enemies[i]->setRectangleViewSize(enemies[i]->getRectangleViewSize() + 10);
         }
         else if (!map->updateWallCollision(enemies[i]->getViewBounds())
             && !enemies[i]->getEnemyDead()
-            && enemies[i]->getEnemyViewLength() <= 420)
+            && enemies[i]->getEnemyViewLength() <= 620)
         {
             enemies[i]->setEnemyViewLength(enemies[i]->getEnemyViewLength() + 10, enemies[i]->getEnemyViewWidth() + 5);
             if (map->updateWallCollision(enemies[i]->getViewRectBounds()))
@@ -674,7 +694,7 @@ void Game::update()
     }
     else
     {
-        if (!playerDead && !pause->getPause())
+        if (!playerDead && !pause->getPause() && !gameComplete)
         {
             updateInput();
             mousePosition = sf::Mouse::getPosition(*window);
@@ -684,9 +704,18 @@ void Game::update()
             updateEnemies();
             updateEnemiesView();
             updateEnemiesWallCollision();
+            
         }
         updateText();
         pause->update();
+
+        if (aliveEnemies == 0 && map->exitCollision(player->getPlayerGlobalBounds()) && menu->getGameSelectedLevel() != 3)
+        {
+            menu->setGameSelectedLevel(menu->getGameSelectedLevel() + 1);
+            restart();
+            map->setLevel(menu->getGameSelectedLevel());
+        }
+
     }
 }
 
@@ -697,7 +726,7 @@ void Game::update()
 */
 void Game::render()
 {
-    window->clear(sf::Color::White);
+    window->clear(sf::Color(205, 205, 205));
 
 	// Draw staff here...
 
@@ -724,11 +753,25 @@ void Game::render()
             {
                 bullet->render(*window);
             }
+
             bulletFirst->render(*window);
 
             window->draw(ammoText);
 
             window->draw(restartText);
+
+            if (aliveEnemies == 0 && menu->getGameSelectedLevel() != 3)
+            {
+                winText.setString("LEVEL CLEAR");
+                window->draw(winText);
+                window->draw(arrow);
+            }
+            else if (aliveEnemies == 0 && menu->getGameSelectedLevel() == 3 && map->exitCollision(player->getPlayerGlobalBounds()))
+            {
+                winText.setString("BRO SAVED");
+                window->draw(winText);
+                gameComplete = true;
+            }
         }
         else pause->render(*window);
     }

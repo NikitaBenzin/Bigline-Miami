@@ -8,12 +8,14 @@ private:
 	// Private variables
 	static const short columns = 1;
 	static const short rows = 1;
-	static const short mapItems = 7;
+	static const short mapItems = 8;
 	int id = 0;
 
 	short selectedLevel = 1;
 
 	sf::Texture ground, corner, wall, entrance, window;
+	sf::Texture* playersBro;
+	sf::Texture* downStairs;
 
 	/*
 		For craeting map in two level array
@@ -65,6 +67,8 @@ public:
 	~Map(); 
 
 	void setLevel(short selectedLevel);
+
+	bool exitCollision(sf::FloatRect bounds);
 
 	bool updateWallCollision(sf::FloatRect bounds);
 	bool updateWallCollision(float pos_x, float pos_y);

@@ -5,6 +5,10 @@
 void Map::initVariables()
 {
 	selectedLevel = 1;
+	playersBro = new sf::Texture;
+	playersBro->loadFromFile("textures/players-bro.png");
+	downStairs = new sf::Texture;
+	downStairs->loadFromFile("textures/down-stairs.png");
 }
 
 void Map::initTexture()
@@ -191,7 +195,7 @@ void Map::initWalls()
 	for (int i = 0; i < mapItems; i++)
 	{
 		mapRectangles[i] = new sf::RectangleShape;
-		mapRectangles[i]->setFillColor(sf::Color::Black);
+		mapRectangles[i]->setFillColor(sf::Color(29, 34, 53));
 	}
 }
 
@@ -219,32 +223,14 @@ void Map::setWalls()
 
 		mapRectangles[6]->setSize(sf::Vector2f(400, 40));
 		mapRectangles[6]->setPosition(1590, 600);
-
+		
+		// Exit rectangle
+		mapRectangles[7]->setSize(sf::Vector2f(150, 220));
+		mapRectangles[7]->setPosition(0, 640);
+		mapRectangles[7]->setFillColor(sf::Color::White);
+		mapRectangles[7]->setTexture(downStairs);
 	}
 	else if (selectedLevel == 2)
-	{
-		mapRectangles[0]->setSize(sf::Vector2f(40, 625));
-		mapRectangles[0]->setPosition(200, 265);
-
-		mapRectangles[1]->setSize(sf::Vector2f(450, 40));
-		mapRectangles[1]->setPosition(200, 265);
-
-		mapRectangles[2]->setSize(sf::Vector2f(40, 445));
-		mapRectangles[2]->setPosition(610, 275);
-
-		mapRectangles[3]->setSize(sf::Vector2f(450, 40));
-		mapRectangles[3]->setPosition(200, 850);
-
-		mapRectangles[4]->setSize(sf::Vector2f(40, 900));
-		mapRectangles[4]->setPosition(940, 260);
-
-		mapRectangles[5]->setSize(sf::Vector2f(40, 625));
-		mapRectangles[5]->setPosition(1300, 260);
-
-		mapRectangles[6]->setSize(sf::Vector2f(650, 40));
-		mapRectangles[6]->setPosition(1300, 260);
-	}
-	else if (selectedLevel == 3)
 	{
 		mapRectangles[0]->setSize(sf::Vector2f(300, 40));
 		mapRectangles[0]->setPosition(0, 510);
@@ -266,7 +252,44 @@ void Map::setWalls()
 
 		mapRectangles[6]->setSize(sf::Vector2f(450, 40));
 		mapRectangles[6]->setPosition(1200, 185);
+
+		// Exit rectangle
+		mapRectangles[7]->setSize(sf::Vector2f(150, 220));
+		mapRectangles[7]->setPosition(0, 0);
+		mapRectangles[7]->setFillColor(sf::Color::White);
+		mapRectangles[7]->setTexture(downStairs);
 	}
+	else if (selectedLevel == 3)
+	{
+		mapRectangles[0]->setSize(sf::Vector2f(40, 625));
+		mapRectangles[0]->setPosition(200, 265);
+
+		mapRectangles[1]->setSize(sf::Vector2f(450, 40));
+		mapRectangles[1]->setPosition(200, 265);
+
+		mapRectangles[2]->setSize(sf::Vector2f(40, 445));
+		mapRectangles[2]->setPosition(610, 275);
+
+		mapRectangles[3]->setSize(sf::Vector2f(450, 40));
+		mapRectangles[3]->setPosition(200, 850);
+
+		mapRectangles[4]->setSize(sf::Vector2f(40, 900));
+		mapRectangles[4]->setPosition(940, 260);
+
+		mapRectangles[5]->setSize(sf::Vector2f(40, 625));
+		mapRectangles[5]->setPosition(1300, 260);
+
+		mapRectangles[6]->setSize(sf::Vector2f(650, 40));
+		mapRectangles[6]->setPosition(1300, 260);
+
+		// Exit rectangle
+		mapRectangles[7]->setSize(sf::Vector2f(70, 70));
+		mapRectangles[7]->setPosition(1650, 350);
+		mapRectangles[7]->setFillColor(sf::Color::White);
+		mapRectangles[7]->setTexture(playersBro);
+		mapRectangles[7]->setRotation(90);
+	}
+
 }
 
 // -------------------------------- CONSTRUCTOR / DESTRUCTOR -------------------------------- // 
@@ -283,11 +306,12 @@ Map::~Map()
 	//{
 	//	delete mapParts[i];
 	//}
-
+	delete playersBro;
 	for (int i = 0; i < 1; i++)
 	{
 		delete mapRectangles[i];
 	}
+
 }
 
 // ------------------------------------ PUBLIC FUNCTIONS ------------------------------------ // 
@@ -298,11 +322,17 @@ void Map::setLevel(short selectedLevel)
 	setWalls();
 }
 
+bool Map::exitCollision(sf::FloatRect bounds)
+{
+	if (mapRectangles[7]->getGlobalBounds().intersects(bounds)) return true;
+	else return false;
+}
+
 // ------------------------------------ UPDATE FUNCTIONS ------------------------------------ // 
 
 bool Map::updateWallCollision(sf::FloatRect bounds)
 {
-	for (int i = 0; i < mapItems; i++)
+	for (int i = 0; i < mapItems-1; i++)
 	{
 		// Collision enemy view wuth walls
 		if (bounds.intersects(mapRectangles[i]->getGlobalBounds()))
@@ -315,7 +345,7 @@ bool Map::updateWallCollision(sf::FloatRect bounds)
 
 bool Map::updateWallCollision(float pos_x, float pos_y)
 {
-	for (int i = 0; i < mapItems; i++)
+	for (int i = 0; i < mapItems-1; i++)
 	{
 		// Collision with wall
 		if (pos_x > mapRectangles[i]->getPosition().x
@@ -334,7 +364,7 @@ bool Map::updateWallCollision(float pos_x, float pos_y)
 */
 short Map::updateCollisionDiraction(float pos_x, float pos_y, sf::FloatRect bounds)
 {
-	for (int i = 0; i < mapItems; i++)
+	for (int i = 0; i < mapItems-1; i++)
 	{
 		if (bounds.intersects(mapRectangles[i]->getGlobalBounds()))
 		{

@@ -130,6 +130,11 @@ void Menu::setGameStart(bool gameStart)
 	this->gameStart = gameStart;
 }
 
+void Menu::setGameSelectedLevel(short selectedLevel)
+{
+	this->selectedLevel = selectedLevel;
+}
+
 bool Menu::getGameStart()
 {
 	return gameStart;
@@ -167,7 +172,7 @@ void Menu::updateEvents(sf::RenderTarget& target)
 	if (btns[0]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
 		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo && !gameSelectLevel)
 	{
-		selectedLevel = 2;
+		selectedLevel = 1;
 	}
 
 	// SELECT LEVEL btn 

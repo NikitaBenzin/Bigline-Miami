@@ -9,7 +9,7 @@
 */
 void Enemy::initVariables()
 {
-    movementSpeed = 3.f;
+    movementSpeed = 4.5f;
 
     deltaTime = clock.restart().asSeconds();
 
@@ -36,7 +36,7 @@ void Enemy::initSprite(float pos_x, float pos_y)
     // enemy sprite
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 32, 32, 32)); // start frame
-    sprite.scale(2, 2);
+    sprite.scale(2.1, 2.1);
     sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
     sprite.setPosition(pos_x, pos_y);
 }
@@ -65,8 +65,8 @@ void Enemy::initTriangle()
     longView.setSize(sf::Vector2f(20, viewLengthTriangle));
     longView.setOrigin(10, 0);
     longView.setFillColor(sf::Color::Transparent);
-    longView.setOutlineColor(sf::Color::Red);
-    longView.setOutlineThickness(1);
+    //longView.setOutlineColor(sf::Color::Red);
+    //longView.setOutlineThickness(1);
     longView.setPosition(sprite.getPosition().x, sprite.getPosition().y);
     longView.setRotation(-90);
 
@@ -194,6 +194,11 @@ float Enemy::getEnemyViewLengthTriangle()
 float Enemy::getEnemyViewWidthTriangle()
 {
     return viewWidthTriangle;
+}
+
+float Enemy::getRotation()
+{
+    return rotation;
 }
 
 float Enemy::getRectangleViewSize()
@@ -383,9 +388,8 @@ bool Enemy::updateEnemyMove(sf::Vector2f playerPosition, sf::FloatRect bounds)
 */
 void Enemy::updateEnemyRotation(sf::Vector2f playerPosition)
 {
-    sf::Vector2f spritePosition = sprite.getPosition();
-    dx = playerPosition.x - spritePosition.x;
-    dy = playerPosition.y - spritePosition.y;
+    dx = playerPosition.x - sprite.getPosition().x;
+    dy = playerPosition.y - sprite.getPosition().y;
     rotation = std::atan2(dy, dx) * 180 / 3.14159265;
     sprite.setRotation(rotation);
     triangle.setRotation(rotation);

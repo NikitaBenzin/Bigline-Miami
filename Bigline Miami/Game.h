@@ -37,6 +37,12 @@ private:
 	sf::Text restartText;
 	sf::Color mainColor;
 	sf::Color mainOutlineColor;
+	sf::Text winText;
+
+	// win thing
+	sf::Texture arrowTexture;
+	sf::Sprite arrow;
+	bool gameComplete;
 
 	// Player
 	Player* player;
@@ -45,6 +51,7 @@ private:
 	// Enemies
 	Enemy* enemy;
 	std::vector<Enemy*> enemies;
+	short aliveEnemies;
 
 	// Knife
 	Knife* knife;
