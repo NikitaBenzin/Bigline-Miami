@@ -115,19 +115,7 @@ void Player::walkAnimation()
 	}
 }
 
-bool Player::weaponCollision()
-{
-	// Collision with gun border
-	if (sprite.getPosition().x > gunBorder.getPosition().x
-		&& sprite.getPosition().x < gunBorder.getPosition().x + 64
-		&& sprite.getPosition().y > gunBorder.getPosition().y
-		&& sprite.getPosition().y < gunBorder.getPosition().y + 64
-		&& !withWeapon)
-	{
-		return true;
-	}
-	else return false;
-}
+
 
 void Player::knifeAttackAnimation()
 {
@@ -348,7 +336,7 @@ void Player::updateAnimation(sf::RenderTarget& window, sf::View view)
 
 	// pick up a weapon
 	// right click, weapon collision and timer in 0.1s after that take the gun
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && weaponCollision() && timer(time) && !withKnife) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && gun->gunCollision(getPlayerGlobalBounds()) && timer(time) && !withKnife) {
 		gun->makeInvisible(); 
 		withWeapon = true;
 		gunBorder.setSize(sf::Vector2f(0, 0));

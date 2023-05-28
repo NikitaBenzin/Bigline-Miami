@@ -71,6 +71,12 @@ unsigned short Gun::getPistolAmmo()
 	return pistolAmmo;
 }
 
+bool Gun::gunCollision(sf::FloatRect bounds)
+{
+	if (sprite.getGlobalBounds().intersects(bounds)) return true;
+	else return false;
+}
+
 void Gun::makeInvisible()
 {
 	sprite.setColor(sf::Color::Transparent);

@@ -211,13 +211,36 @@ void Game::setEnemies(short selected_level)
 
         player->setPlayerPosition(100, 980);
         player->setGunPosition(150, 100);
-        knife->setKnifePosition(0, 250, 1000);
+        knife->setKnifePosition(0, 250, 990);
     }
     else if (selected_level == 3)
     {
-        enemies.push_back(new Enemy(100, 700, false));
-        enemies.push_back(new Enemy(100, 500, false));
-        enemies.push_back(new Enemy(100, 200, false));
+        enemies.push_back(new Enemy(50, 450, false));
+        
+        enemies.push_back(new Enemy(400, 50, false));
+        enemies[1]->setRotation(90);
+
+        enemies.push_back(new Enemy(100, 950, false));
+        enemies[2]->setRotation(-45);
+
+        enemies.push_back(new Enemy(410, 900, false));
+        enemies[3]->setRotation(-90);
+
+        enemies.push_back(new Enemy(1100, 450, false));
+        enemies[4]->setRotation(180);
+
+        enemies.push_back(new Enemy(1400, 350, false));
+        enemies[5]->setRotation(180);
+
+        enemies.push_back(new Enemy(1850, 100, false));
+        enemies[6]->setRotation(180);
+
+        enemies.push_back(new Enemy(1350, 650, false));
+        enemies[7]->setRotation(135);
+
+        player->setPlayerPosition(1700, 650);
+        player->setGunPosition(600, 100);
+        knife->setKnifePosition(0, 1700, 850);
     }
 }
 
@@ -471,8 +494,8 @@ void Game::updatePollEvents()
         }
         else if (menu->getGameStart() && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape)
         {
-            if (!pause->getPause() && player->timer(time) && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape) pause->setPause(true);
-            else if (player->timer(time) && event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape) pause->setPause(false);
+            if (!pause->getPause() && player->timer(time) && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) pause->setPause(true);
+            else if (player->timer(time) && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) pause->setPause(false);
         }
     }
 }

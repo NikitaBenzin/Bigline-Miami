@@ -29,6 +29,7 @@ public:
 	float getPositionY();
 	unsigned short getPistolAmmo();
 
+	bool gunCollision(sf::FloatRect bounds);
 	void makeInvisible();
 	void makeVisible();
 	void dropTheWeapon(float player_pos_x, float player_pos_y);

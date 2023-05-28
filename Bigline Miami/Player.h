@@ -66,7 +66,6 @@ public:
 	void walkAnimation();
 
 	// Actions with weapon
-	bool weaponCollision();
 	void knifeAttackAnimation();
 	void attackAnimation();
 
