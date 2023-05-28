@@ -65,8 +65,8 @@ void Enemy::initTriangle()
     longView.setSize(sf::Vector2f(20, viewLengthTriangle));
     longView.setOrigin(10, 0);
     longView.setFillColor(sf::Color::Transparent);
-    //longView.setOutlineColor(sf::Color::Red);
-    //longView.setOutlineThickness(1);
+    longView.setOutlineColor(sf::Color::Red);
+    longView.setOutlineThickness(1);
     longView.setPosition(sprite.getPosition().x, sprite.getPosition().y);
     longView.setRotation(-90);
 
@@ -156,6 +156,14 @@ void Enemy::setPosition(float pos_x, float pos_y)
 void Enemy::setCknocked(bool state)
 {
     enemyCknocked = state;
+}
+
+void Enemy::setRotation(float degree)
+{
+    sprite.setRotation(degree);
+    triangle.setRotation(degree);
+    longView.setRotation(degree - 90);
+    rectangleView.setRotation(degree);
 }
 
 float Enemy::getEnemyPosX()

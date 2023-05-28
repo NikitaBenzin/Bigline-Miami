@@ -191,29 +191,81 @@ void Map::initWalls()
 	for (int i = 0; i < mapItems; i++)
 	{
 		mapRectangles[i] = new sf::RectangleShape;
-		mapRectangles[0]->setFillColor(sf::Color::Black);
+		mapRectangles[i]->setFillColor(sf::Color::Black);
 	}
-
-	mapRectangles[0]->setSize(sf::Vector2f(40, 400));
-	mapRectangles[0]->setPosition(800, 250);
 }
 
 void Map::setWalls()
 {
 	if (selectedLevel == 1)
 	{
-		mapRectangles[0]->setSize(sf::Vector2f(40, 400));
-		mapRectangles[0]->setPosition(800, 250);
+		mapRectangles[0]->setSize(sf::Vector2f(380, 40));
+		mapRectangles[0]->setPosition(0, 600);
+
+		mapRectangles[1]->setSize(sf::Vector2f(40, 350));
+		mapRectangles[1]->setPosition(350, 600);
+
+		mapRectangles[2]->setSize(sf::Vector2f(40, 900));
+		mapRectangles[2]->setPosition(600, 250);
+
+		mapRectangles[3]->setSize(sf::Vector2f(40, 500));
+		mapRectangles[3]->setPosition(1000, 600);
+
+		mapRectangles[4]->setSize(sf::Vector2f(400, 40));
+		mapRectangles[4]->setPosition(1000, 600);
+
+		mapRectangles[5]->setSize(sf::Vector2f(40, 425));
+		mapRectangles[5]->setPosition(1475, 0);
+
+		mapRectangles[6]->setSize(sf::Vector2f(400, 40));
+		mapRectangles[6]->setPosition(1590, 600);
+
 	}
 	else if (selectedLevel == 2)
 	{
-		mapRectangles[0]->setSize(sf::Vector2f(40, 800));
-		mapRectangles[0]->setPosition(600, 450);
+		mapRectangles[0]->setSize(sf::Vector2f(40, 625));
+		mapRectangles[0]->setPosition(200, 265);
+
+		mapRectangles[1]->setSize(sf::Vector2f(450, 40));
+		mapRectangles[1]->setPosition(200, 265);
+
+		mapRectangles[2]->setSize(sf::Vector2f(40, 445));
+		mapRectangles[2]->setPosition(610, 275);
+
+		mapRectangles[3]->setSize(sf::Vector2f(450, 40));
+		mapRectangles[3]->setPosition(200, 850);
+
+		mapRectangles[4]->setSize(sf::Vector2f(40, 900));
+		mapRectangles[4]->setPosition(940, 260);
+
+		mapRectangles[5]->setSize(sf::Vector2f(40, 625));
+		mapRectangles[5]->setPosition(1300, 260);
+
+		mapRectangles[6]->setSize(sf::Vector2f(650, 40));
+		mapRectangles[6]->setPosition(1300, 260);
 	}
 	else if (selectedLevel == 3)
 	{
-		mapRectangles[0]->setSize(sf::Vector2f(40, 800));
-		mapRectangles[0]->setPosition(200, 750);
+		mapRectangles[0]->setSize(sf::Vector2f(300, 40));
+		mapRectangles[0]->setPosition(0, 510);
+
+		mapRectangles[1]->setSize(sf::Vector2f(40, 550));
+		mapRectangles[1]->setPosition(450, 0);
+
+		mapRectangles[2]->setSize(sf::Vector2f(40, 550));
+		mapRectangles[2]->setPosition(450, 700);
+					  
+		mapRectangles[3]->setSize(sf::Vector2f(1100, 40));
+		mapRectangles[3]->setPosition(900, 510);
+
+		mapRectangles[4]->setSize(sf::Vector2f(40, 325));
+		mapRectangles[4]->setPosition(1200, 185);
+
+		mapRectangles[5]->setSize(sf::Vector2f(40, 325));
+		mapRectangles[5]->setPosition(1500, 510);
+
+		mapRectangles[6]->setSize(sf::Vector2f(450, 40));
+		mapRectangles[6]->setPosition(1200, 185);
 	}
 }
 

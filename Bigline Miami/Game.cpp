@@ -133,11 +133,12 @@ void Game::restart()
 
     initPlayer();
     initEnemies();
-    setEnemies(menu->getGameSelectedLevel());
     initKnife();
-    
+
     playerDead = false;
     restartText.setString("");
+
+    setEnemies(menu->getGameSelectedLevel());
 }
 
 /**
@@ -158,12 +159,59 @@ void Game::setEnemies(short selected_level)
 {
     if (selected_level == 1)
     {
-        enemies.push_back(new Enemy(100, 500, false));
+        enemies.push_back(new Enemy(100, 450, false));
+        enemies[0]->setRotation(-45);
+        enemies.push_back(new Enemy(150, 520, false));
+        enemies[1]->setRotation(-40);
+
+        enemies.push_back(new Enemy(100, 750, false));
+        enemies[2]->setRotation(45);
+
+        enemies.push_back(new Enemy(1250, 150, false));
+        enemies[3]->setRotation(135);
+
+        enemies.push_back(new Enemy(1600, 160, false));
+        
+
+        enemies.push_back(new Enemy(1200, 900, false));
+        enemies[5]->setRotation(-45);
+
+        enemies.push_back(new Enemy(1700, 720, false));
+        enemies[6]->setRotation(90);
+
+        player->setPlayerPosition(810, 980);
+        player->setGunPosition(1350, 125);
+        knife->setKnifePosition(0, 810, 750);
     }
     else if (selected_level == 2)
     {
-        enemies.push_back(new Enemy(100, 200, false));
-        enemies.push_back(new Enemy(100, 500, false));
+        enemies.push_back(new Enemy(100, 150, false));
+        enemies[0]->setRotation(90);
+
+        enemies.push_back(new Enemy(500, 150, false));
+        enemies[1]->setRotation(180);
+
+        enemies.push_back(new Enemy(320, 400, false));
+        enemies[2]->setRotation(55);
+
+        enemies.push_back(new Enemy(800, 350, false));
+        enemies[3]->setRotation(90);
+
+        enemies.push_back(new Enemy(1150, 650, false));
+        enemies[4]->setRotation(-90);
+
+        enemies.push_back(new Enemy(1850, 150, false));
+        enemies[5]->setRotation(180);
+
+        enemies.push_back(new Enemy(1450, 450, false));
+        enemies[6]->setRotation(90);
+
+        enemies.push_back(new Enemy(1750, 550, false));
+        enemies[7]->setRotation(125);
+
+        player->setPlayerPosition(100, 980);
+        player->setGunPosition(150, 100);
+        knife->setKnifePosition(0, 250, 1000);
     }
     else if (selected_level == 3)
     {

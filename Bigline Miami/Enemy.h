@@ -67,6 +67,7 @@ public:
 	void setDead(bool dead);
 	void setPosition(float pos_x, float pos_y);
 	void setCknocked(bool state);
+	void setRotation(float degree);
 
 	// Getters
 	float getEnemyPosX();

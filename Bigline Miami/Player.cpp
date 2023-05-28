@@ -177,6 +177,12 @@ void Player::setWithKnife(bool withKnife)
 	this->withKnife = withKnife;
 }
 
+void Player::setGunPosition(float pos_x, float pos_y)
+{
+	gun->setPosition(pos_x, pos_y);
+	gunBorder.setPosition(pos_x - 32, pos_y - 32);
+}
+
 
 unsigned short Player::getGunAmmo()
 {

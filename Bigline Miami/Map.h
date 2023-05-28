@@ -8,7 +8,7 @@ private:
 	// Private variables
 	static const short columns = 1;
 	static const short rows = 1;
-	static const short mapItems = 1;
+	static const short mapItems = 7;
 	int id = 0;
 
 	short selectedLevel = 1;

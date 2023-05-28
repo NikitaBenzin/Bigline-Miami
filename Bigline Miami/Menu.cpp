@@ -167,7 +167,7 @@ void Menu::updateEvents(sf::RenderTarget& target)
 	if (btns[0]->getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition()))
 		&& sf::Mouse::isButtonPressed(sf::Mouse::Left) && !gameInfo && !gameSelectLevel)
 	{
-		selectedLevel = 1;
+		selectedLevel = 2;
 	}
 
 	// SELECT LEVEL btn 
