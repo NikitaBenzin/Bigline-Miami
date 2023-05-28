@@ -202,26 +202,26 @@ void Game::setEnemies(short selected_level)
     {
         enemies.push_back(new Enemy(50, 450, false));
 
-        enemies.push_back(new Enemy(400, 50, false));
-        enemies[1]->setRotation(90);
+        //enemies.push_back(new Enemy(400, 50, false));
+        //enemies[1]->setRotation(90);
 
-        enemies.push_back(new Enemy(100, 950, false));
-        enemies[2]->setRotation(-45);
+        //enemies.push_back(new Enemy(100, 950, false));
+        //enemies[2]->setRotation(-45);
 
-        enemies.push_back(new Enemy(410, 900, false));
-        enemies[3]->setRotation(-90);
+        //enemies.push_back(new Enemy(410, 900, false));
+        //enemies[3]->setRotation(-90);
 
-        enemies.push_back(new Enemy(1100, 450, false));
-        enemies[4]->setRotation(180);
+        //enemies.push_back(new Enemy(1100, 450, false));
+        //enemies[4]->setRotation(180);
 
-        enemies.push_back(new Enemy(1400, 350, false));
-        enemies[5]->setRotation(180);
+        //enemies.push_back(new Enemy(1400, 350, false));
+        //enemies[5]->setRotation(180);
 
-        enemies.push_back(new Enemy(1850, 100, false));
-        enemies[6]->setRotation(180);
+        //enemies.push_back(new Enemy(1850, 100, false));
+        //enemies[6]->setRotation(180);
 
-        enemies.push_back(new Enemy(1350, 650, false));
-        enemies[7]->setRotation(135);
+        //enemies.push_back(new Enemy(1350, 650, false));
+        //enemies[7]->setRotation(135);
 
         player->setPlayerPosition(1700, 650);
         player->setGunPosition(600, 100);

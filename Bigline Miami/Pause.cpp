@@ -15,7 +15,7 @@ void Pause::initVariables()
 	pauseBg->setTexture(bgTexture);
 
 	// init Hover Color
-	hoverColor = sf::Color(100, 100, 100, 150);
+	hoverColor = sf::Color(100, 100, 100);
 }
 
 void Pause::initBtns()
@@ -24,7 +24,7 @@ void Pause::initBtns()
 	{
 		btns.push_back(new sf::RectangleShape);
 		btns[i]->setSize(sf::Vector2f(300, 100));
-		btns[i]->setPosition(200, (i + 2) * 150);
+		btns[i]->setPosition(200, (i + 3) * 150);
 		btns[i]->setOutlineColor(sf::Color::Black);
 		btns[i]->setOutlineThickness(5);
 		btns[i]->setTexture(btnsTexture);

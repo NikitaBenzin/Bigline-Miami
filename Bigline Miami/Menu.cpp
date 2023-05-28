@@ -36,7 +36,7 @@ void Menu::initBtns()
 	{
 		btns.push_back(new sf::RectangleShape);
 		btns[i]->setSize(sf::Vector2f(300, 100));
-		btns[i]->setPosition(200, (i+2) * 150);
+		btns[i]->setPosition(200, (i+3) * 150);
 		btns[i]->setOutlineColor(sf::Color::Black);
 		btns[i]->setOutlineThickness(5);
 		btns[i]->setTexture(btnsTexture);
@@ -46,7 +46,7 @@ void Menu::initBtns()
 	// BACK btn
 	btns.push_back(new sf::RectangleShape);
 	btns[4]->setSize(sf::Vector2f(300, 100));
-	btns[4]->setPosition(200, 150);
+	btns[4]->setPosition(200, 380);
 	btns[4]->setOutlineColor(sf::Color::Black);
 	btns[4]->setOutlineThickness(5);
 	btns[4]->setTexture(btnsTexture);
@@ -81,7 +81,7 @@ void Menu::openInfo(sf::RenderTarget& target)
 void Menu::initColors()
 {
 	// init Hover Color
-	hoverColor = sf::Color(100, 100, 100, 150);
+	hoverColor = sf::Color(100, 100, 100);
 }
 
 void Menu::openSelectLevel(sf::RenderTarget& target)
@@ -91,7 +91,7 @@ void Menu::openSelectLevel(sf::RenderTarget& target)
 	{
 		btns.push_back(new sf::RectangleShape);
 		btns[i]->setSize(sf::Vector2f(300, 100));
-		btns[i]->setPosition((target.getSize().x / 4 - (5 * 340)) + i * 350, target.getSize().y / 2 - 390);
+		btns[i]->setPosition((target.getSize().x / 4 - (5 * 340)) + i * 350, target.getSize().y / 2 - 160);
 		btns[i]->setOutlineColor(sf::Color::Black);
 		btns[i]->setOutlineThickness(5);
 		btns[i]->setTexture(btnsLevelTexture);
