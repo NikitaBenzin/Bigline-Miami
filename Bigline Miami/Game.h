@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
+
 #include <map>
 #include <math.h>
 
@@ -30,6 +32,10 @@ private:
 
 	// Menu
 	Menu* menu;
+
+	// Music
+	sf::Music music;
+	sf::Music gameMusic;
 
 	// Fonts
 	sf::Font font;
@@ -90,6 +96,7 @@ public:
 	// Public functions
 	void run();
 
+	void updateMusic();
 	void updateText();
 	void updateGameIvents(sf::Vector2f playerPosition, sf::FloatRect bounds);
 	void updateBullets();

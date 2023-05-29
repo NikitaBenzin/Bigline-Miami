@@ -46,7 +46,7 @@ void Menu::initBtns()
 	// BACK btn
 	btns.push_back(new sf::RectangleShape);
 	btns[4]->setSize(sf::Vector2f(300, 100));
-	btns[4]->setPosition(200, 380);
+	btns[4]->setPosition(200, 300);
 	btns[4]->setOutlineColor(sf::Color::Black);
 	btns[4]->setOutlineThickness(5);
 	btns[4]->setTexture(btnsTexture);

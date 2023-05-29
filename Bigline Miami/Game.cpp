@@ -28,6 +28,16 @@ void Game::initVariables()
     arrowTexture.loadFromFile("./textures/arrow.png");
     arrow.setTexture(arrowTexture);
     arrow.setScale(0.2, 0.2);
+
+    // music
+    music.openFromFile("audio/menuMusic.wav");
+    music.setLoop(true);
+    music.setVolume(20);
+    music.play();
+
+    gameMusic.openFromFile("audio/gameMusic.wav");
+    gameMusic.setLoop(true);
+    gameMusic.setVolume(20);
 } 
 
 /**
@@ -249,10 +259,10 @@ void Game::setEnemies(short selected_level)
         enemies.push_back(new Enemy(1850, 150, false));
         enemies[5]->setRotation(180);
 
-        enemies.push_back(new Enemy(1450, 450, false));
+        enemies.push_back(new Enemy(1550, 450, false));
         enemies[6]->setRotation(90);
 
-        enemies.push_back(new Enemy(1750, 550, false));
+        enemies.push_back(new Enemy(1800, 550, false));
         enemies[7]->setRotation(125);
 
         player->setPlayerPosition(100, 980);
@@ -574,6 +584,28 @@ void Game::updateInput()
     }
 }
 
+void Game::updateMusic()
+{
+    if (!menu->getGameStart() && music.getStatus() == sf::Music::Paused)
+    {
+        music.play();
+        gameMusic.pause();
+    }
+    else if (menu->getGameStart() && pause->getPause() && music.getStatus() == sf::Music::Paused)
+    {
+        music.play();
+        gameMusic.pause();
+    }
+    else if (menu->getGameStart() && !pause->getPause())
+    {
+        music.pause();
+        if (gameMusic.getStatus() != sf::Music::Playing)
+        {
+            gameMusic.play();
+        }
+    }
+}
+
 /**
 *   @ return void
 *   - update text (show how much ammo in the gun) 
@@ -672,7 +704,6 @@ void Game::updateEnemiesWallCollision()
 void Game::update()
 {
     updatePollEvents();
-
     if (!menu->getGameStart())
     {
         menu->update(*window);
@@ -696,6 +727,7 @@ void Game::update()
             menu->setGameStart(true);
             pause->setQiut(false);
         }
+        time = sf::seconds(0.1f);
     }
     else
     {
@@ -717,7 +749,6 @@ void Game::update()
         if (pause->getQuit())
         {
             menu->setGameStart(false);
-
             menu->setGameSelectedLevel(0);
             pause->setPause(false);
             pause->setQiut(false);
@@ -731,6 +762,7 @@ void Game::update()
         }
 
     }
+    updateMusic();
 }
 
 // ------------------------------------ RENDER ------------------------------------ // 
@@ -785,8 +817,6 @@ void Game::render()
             window->draw(winText);
             gameComplete = true;
         }
-        
-        
     }
     else if (pause->getPause()) pause->render(*window);
 
