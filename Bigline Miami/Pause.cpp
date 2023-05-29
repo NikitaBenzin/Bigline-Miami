@@ -24,7 +24,7 @@ void Pause::initBtns()
 	{
 		btns.push_back(new sf::RectangleShape);
 		btns[i]->setSize(sf::Vector2f(300, 100));
-		btns[i]->setPosition(200, (i + 3) * 150);
+		btns[i]->setPosition(600, (i + 3) * 150);
 		btns[i]->setOutlineColor(sf::Color::Black);
 		btns[i]->setOutlineThickness(5);
 		btns[i]->setTexture(btnsTexture);
@@ -54,6 +54,12 @@ void Pause::setPause(bool pause)
 {
 	this->pause = pause;
 }
+
+void Pause::setQiut(bool quit)
+{
+	this->quit = quit;
+}
+
 
 bool Pause::getPause()
 {

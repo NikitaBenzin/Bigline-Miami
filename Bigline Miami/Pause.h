@@ -25,6 +25,8 @@ public:
 
 	// Public functions
 	void setPause(bool pause);
+	void setQiut(bool quit);
+
 	bool getPause();
 	bool getQuit();
 

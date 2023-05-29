@@ -202,26 +202,26 @@ void Game::setEnemies(short selected_level)
     {
         enemies.push_back(new Enemy(50, 450, false));
 
-        //enemies.push_back(new Enemy(400, 50, false));
-        //enemies[1]->setRotation(90);
+        enemies.push_back(new Enemy(400, 50, false));
+        enemies[1]->setRotation(90);
 
-        //enemies.push_back(new Enemy(100, 950, false));
-        //enemies[2]->setRotation(-45);
+        enemies.push_back(new Enemy(100, 950, false));
+        enemies[2]->setRotation(-45);
 
-        //enemies.push_back(new Enemy(410, 900, false));
-        //enemies[3]->setRotation(-90);
+        enemies.push_back(new Enemy(410, 900, false));
+        enemies[3]->setRotation(-90);
 
-        //enemies.push_back(new Enemy(1100, 450, false));
-        //enemies[4]->setRotation(180);
+        enemies.push_back(new Enemy(1100, 450, false));
+        enemies[4]->setRotation(180);
 
-        //enemies.push_back(new Enemy(1400, 350, false));
-        //enemies[5]->setRotation(180);
+        enemies.push_back(new Enemy(1400, 350, false));
+        enemies[5]->setRotation(180);
 
-        //enemies.push_back(new Enemy(1850, 100, false));
-        //enemies[6]->setRotation(180);
+        enemies.push_back(new Enemy(1850, 100, false));
+        enemies[6]->setRotation(180);
 
-        //enemies.push_back(new Enemy(1350, 650, false));
-        //enemies[7]->setRotation(135);
+        enemies.push_back(new Enemy(1350, 650, false));
+        enemies[7]->setRotation(135);
 
         player->setPlayerPosition(1700, 650);
         player->setGunPosition(600, 100);
@@ -506,7 +506,7 @@ void Game::updatePollEvents()
         if (event.type == sf::Event::Closed)
             window->close();
         // event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::Escape || 
-        else if (menu->getGameExit() || pause->getQuit())
+        else if (menu->getGameExit())
             window->close();
         else if (event.Event::KeyPressed && event.Event::key.code == sf::Keyboard::R) {
             if (playerDead) restart();
@@ -680,16 +680,21 @@ void Game::update()
             map->setLevel(1);
             setEnemies(1);
             menu->setGameStart(true);
+            pause->setQiut(false);
+            pause->setPause(false);
         }
         else if (menu->getGameSelectedLevel() == 2) {
             map->setLevel(2);
             setEnemies(2);
             menu->setGameStart(true);
+            pause->setQiut(false);
+            pause->setPause(false);
         }
         else if (menu->getGameSelectedLevel() == 3) {
             map->setLevel(3);
             setEnemies(3);
             menu->setGameStart(true);
+            pause->setQiut(false);
         }
     }
     else
@@ -709,6 +714,15 @@ void Game::update()
         updateText();
         pause->update();
 
+        if (pause->getQuit())
+        {
+            menu->setGameStart(false);
+
+            menu->setGameSelectedLevel(0);
+            pause->setPause(false);
+            pause->setQiut(false);
+            restart();
+        }
         if (aliveEnemies == 0 && map->exitCollision(player->getPlayerGlobalBounds()) && menu->getGameSelectedLevel() != 3)
         {
             menu->setGameSelectedLevel(menu->getGameSelectedLevel() + 1);
@@ -730,51 +744,51 @@ void Game::render()
 
 	// Draw staff here...
 
-    if (!menu->getGameStart())
+    if (!menu->getGameStart() && !pause->getPause())
     {
         menu->render(*window);
     }
-    else
+    else if (menu->getGameStart() && !pause->getPause())
     {
-        if (!pause->getPause())
+
+        map->render(*window);
+
+        for (auto* enemy : enemies)
         {
-            map->render(*window);
-
-            for (auto* enemy : enemies)
-            {
-                enemy->render(*window);
-            }
-
-            knife->render(*window);
-
-            player->render(*window);
-
-            for (auto* bullet : bullets)
-            {
-                bullet->render(*window);
-            }
-
-            bulletFirst->render(*window);
-
-            window->draw(ammoText);
-
-            window->draw(restartText);
-
-            if (aliveEnemies == 0 && menu->getGameSelectedLevel() != 3)
-            {
-                winText.setString("LEVEL CLEAR");
-                window->draw(winText);
-                window->draw(arrow);
-            }
-            else if (aliveEnemies == 0 && menu->getGameSelectedLevel() == 3 && map->exitCollision(player->getPlayerGlobalBounds()))
-            {
-                winText.setString("BRO SAVED");
-                window->draw(winText);
-                gameComplete = true;
-            }
+            enemy->render(*window);
         }
-        else pause->render(*window);
+
+        knife->render(*window);
+
+        player->render(*window);
+
+        for (auto* bullet : bullets)
+        {
+            bullet->render(*window);
+        }
+
+        bulletFirst->render(*window);
+
+        window->draw(ammoText);
+
+        window->draw(restartText);
+
+        if (aliveEnemies == 0 && menu->getGameSelectedLevel() != 3)
+        {
+            winText.setString("LEVEL CLEAR");
+            window->draw(winText);
+            window->draw(arrow);
+        }
+        else if (aliveEnemies == 0 && menu->getGameSelectedLevel() == 3 && map->exitCollision(player->getPlayerGlobalBounds()))
+        {
+            winText.setString("BRO SAVED");
+            window->draw(winText);
+            gameComplete = true;
+        }
+        
+        
     }
+    else if (pause->getPause()) pause->render(*window);
 
 	window->display();
 }
