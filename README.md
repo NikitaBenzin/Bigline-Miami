@@ -1,3 +1,6 @@
+<p>To run the game from the editor you will need to install the SFML library from the official website: https://www.sfml-dev.org/index.php</p>
+<p>And connect it to your project in code editor. I recommend to use Visual Studio 2022</p>
+
 # <h1>![game-icon](https://user-images.githubusercontent.com/83305705/233841674-1b868e9b-b404-4671-b861-672b09ca82ba.png) BIGLINE MIAMI </h1> 
 
 <h2> Game project </h2>
