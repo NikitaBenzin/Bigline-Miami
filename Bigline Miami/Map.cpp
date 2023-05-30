@@ -283,6 +283,8 @@ void Map::setWalls()
 		mapRectangles[6]->setPosition(1300, 260);
 
 		// Exit rectangle
+		delete mapRectangles[7];
+		mapRectangles[7] = new sf::RectangleShape;
 		mapRectangles[7]->setSize(sf::Vector2f(70, 70));
 		mapRectangles[7]->setPosition(1650, 350);
 		mapRectangles[7]->setFillColor(sf::Color::White);
