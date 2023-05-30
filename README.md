@@ -19,7 +19,7 @@
    The goal of the game is to save the brother from the hands of enemies
 </p>
 
-<h4> Brother: <img transform: rotate(90deg) src="https://github.com/NikitaBenzin/Bigline-Miami/assets/83305705/891ddd17-68df-4fdd-967e-138f73f22176"></h4></br>
+<h4> Brother: <img src="https://github.com/NikitaBenzin/Bigline-Miami/blob/master/Bigline%20Miami/textures/players-bro.png?raw=true"></h4></br>
 
 <h2>
    About code
