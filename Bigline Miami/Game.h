@@ -50,6 +50,13 @@ private:
 	sf::Sprite arrow;
 	bool gameComplete;
 
+	// Titre
+	sf::Texture titreTexture;
+	sf::RectangleShape titreRect;
+	sf::RectangleShape titreBackgrond;
+	short alpha;
+
+
 	// Player
 	Player* player;
 	bool playerDead;

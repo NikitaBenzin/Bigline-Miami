@@ -38,6 +38,16 @@ void Game::initVariables()
     gameMusic.openFromFile("audio/gameMusic.wav");
     gameMusic.setLoop(true);
     gameMusic.setVolume(20);
+
+    // titre
+    titreTexture.loadFromFile("textures/titre.png");
+    titreRect.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+    titreRect.setTexture(&titreTexture);
+    titreRect.setPosition(0, 1080);
+    
+    alpha = 0;
+    titreBackgrond.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+    titreBackgrond.setFillColor(sf::Color(0, 0, 0, alpha));
 } 
 
 /**
@@ -526,6 +536,18 @@ void Game::updatePollEvents()
             if (!pause->getPause() && player->timer(time) && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) pause->setPause(true);
             else if (player->timer(time) && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) pause->setPause(false);
         }
+
+
+        if (gameComplete 
+            && sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            menu->setGameStart(false);
+            menu->setGameSelectedLevel(0);
+            clearEnemies();
+            gameComplete = false;
+
+        }
     }
 }
 
@@ -760,7 +782,6 @@ void Game::update()
             restart();
             map->setLevel(menu->getGameSelectedLevel());
         }
-
     }
     updateMusic();
 }
@@ -816,6 +837,16 @@ void Game::render()
             winText.setString("BRO SAVED");
             window->draw(winText);
             gameComplete = true;
+            if (titreRect.getPosition().y > 0)
+                titreRect.setPosition(0, titreRect.getPosition().y - 1);
+            
+            if (alpha < 255)
+            {
+                alpha += 1;
+                titreBackgrond.setFillColor(sf::Color(0, 0, 0, alpha));
+            }
+            window->draw(titreBackgrond);
+            window->draw(titreRect);
         }
     }
     else if (pause->getPause()) pause->render(*window);
